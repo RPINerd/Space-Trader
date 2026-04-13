@@ -8,7 +8,7 @@ description = "A space trading game"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "pytest>=8.3.4",
+    "pytest>=9.0.3",
 ]
 classifiers = [
     "Development Status :: 1 - Planning",
