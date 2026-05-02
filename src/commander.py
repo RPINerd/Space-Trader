@@ -12,7 +12,7 @@ from .economy import SHIPS, Ship
 
 class Commander:
 
-    """"""
+    """Player stats, skills and progress through the game"""
 
     def __init__(self, name: str, pilot_skill: int, fighter_skill: int, trader_skill: int, engineer_skill: int) -> None:
         """"""
@@ -96,15 +96,14 @@ class Commander:
         Raises:
             ValueError: If the skill is not in the range [0-3]
         """
-        # TODO add skill cap
         if skill == Skills.PILOT:
-            self.pilotSkill += improvement
+            self.pilotSkill = min(self.pilotSkill + improvement, MAXSKILL)
         elif skill == Skills.FIGHTER:
-            self.fighterSkill += improvement
+            self.fighterSkill = min(self.fighterSkill + improvement, MAXSKILL)
         elif skill == Skills.TRADER:
-            self.traderSkill += improvement
+            self.traderSkill = min(self.traderSkill + improvement, MAXSKILL)
         elif skill == Skills.ENGINEER:
-            self.engineerSkill += improvement
+            self.engineerSkill = min(self.engineerSkill + improvement, MAXSKILL)
         else:
             raise ValueError(f"Invalid skill type, expected [0-3] but got {skill}!")
 
@@ -119,15 +118,14 @@ class Commander:
         Raises:
             ValueError: If the skill is not in the range [0-3]
         """
-        # TODO prevent from going below 1
         if skill == Skills.PILOT:
-            self.pilotSkill -= deterioration
+            self.pilotSkill = max(self.pilotSkill - deterioration, 1)
         elif skill == Skills.FIGHTER:
-            self.fighterSkill -= deterioration
+            self.fighterSkill = max(self.fighterSkill - deterioration, 1)
         elif skill == Skills.TRADER:
-            self.traderSkill -= deterioration
+            self.traderSkill = max(self.traderSkill - deterioration, 1)
         elif skill == Skills.ENGINEER:
-            self.engineerSkill -= deterioration
+            self.engineerSkill = max(self.engineerSkill - deterioration, 1)
         else:
             raise ValueError(f"Invalid skill type, expected [0-3] but got {skill}!")
 
@@ -183,10 +181,12 @@ class Crew:
         Args:
             amount (int): The amount to modify the skill by. Can be negative.
         """
-        skills = [skill for skill in self.get_skills() if 1 <= skill + amount <= MAXSKILL]
+        skill_attrs = ["pilotSkill", "fighterSkill", "traderSkill", "engineerSkill"]
+        eligible = [i for i, s in enumerate(self.get_skills()) if 1 <= s + amount <= MAXSKILL]
 
-        if not skills:
+        if not eligible:
             return
 
-        skill = random.choice(skills)
-        skill += amount
+        idx = random.choice(eligible)
+        setattr(self, skill_attrs[idx], self.get_skills()[idx] + amount)
+        # TODO: if traderSkill changed, RecalculateBuyPrices for current system (see source note above)
