@@ -1,6 +1,6 @@
 [project]
 name = "Space-Trader"
-version = "1.2.3"
+version = "1.2.4"
 authors = [
     {name = "RPINerd"}
 ]
@@ -8,10 +8,9 @@ description = "A space trading game"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "pytest>=9.0.3",
 ]
 classifiers = [
-    "Development Status :: 1 - Planning",
+    "Development Status :: 2 - Pre-Alpha",
     "Environment :: Console",
     "Environment :: X11 Applications",
     "Intended Audience :: End Users/Desktop",
@@ -21,6 +20,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Framework :: Pytest",
     "Topic :: Games/Entertainment :: Role-Playing",
     "Topic :: Games/Entertainment :: Simulation",
@@ -42,6 +42,16 @@ keywords = [
     "simulation",
 ]
 
+[project.optional-dependencies]
+test = [
+    "pytest>=9.0.3",
+    "ruff>=0.0.241",
+]
 [project.urls]
 Homepage = "https://github.com/RPINerd/Space-Trader"
 Issues = "https://github.com/RPINerd/Space-Trader/issues"
+
+[tool.ruff.lint]
+extend-ignore = [
+    "ERA001",  # Commented out code
+]
