@@ -28,46 +28,57 @@ SCREENS = {
     "B": {
         "name": "buy_cargo",
         "title": "Buy Cargo",
+        "class": BuyCargo,
     },
     "S": {
         "name": "sell_cargo",
         "title": "Sell Cargo",
+        "class": SellCargo,
     },
     "Y": {
         "name": "shipyard",
         "title": "Shipyard",
+        "class": Shipyard,
     },
     "W": {
         "name": "short_range_chart",
         "title": "Short Range Chart",
+        "class": ShortRange,
     },
     "E": {
         "name": "buy_equipment",
         "title": "Buy Equipment",
+        "class": BuyEquipment,
     },
     "Q": {
         "name": "sell_equipment",
         "title": "Sell Equipment",
+        "class": SellEquipment,
     },
     "P": {
         "name": "personnel",
         "title": "Personnel",
+        "class": Personnel,
     },
     "K": {
         "name": "bank",
         "title": "Bank",
+        "class": Bank,
     },
     "C": {
         "name": "commander_status",
         "title": "Commander Status",
+        "class": CommanderInfo,
     },
     "G": {
         "name": "galactic_chart",
         "title": "Galactic Chart",
+        "class": LongRange,
     },
     "O": {
         "name": "options",
         "title": "Options",
+        "class": None,
     },
 }
 

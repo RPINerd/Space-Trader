@@ -6,6 +6,7 @@
     This file is the main game file. It shows the splash screen, creates the main window and starts the game.
 """
 
+import configparser
 import tkinter as tk
 from pathlib import Path
 from tkinter import ttk
@@ -27,7 +28,7 @@ class SpaceTrader(tk.Tk):
         self.title("Space Trader")
         self.resizable(False, False)
         self.geometry(self._center_window(screen_x, screen_y))
-        self.bind_all("<KeyPress-Escape>", lambda e: self.quit())
+        self.bind_all("<KeyPress-Escape>", lambda _: self.quit())
         self._load_assets()
         self._build_styles()
         self.manager = ScreenManager(self)
@@ -56,18 +57,18 @@ class SpaceTrader(tk.Tk):
     def _load_assets(self) -> None:
         """Loads all game assets, currently just pointers to directories"""
         # Load the configuration file
-        # self.config = configparser.ConfigParser()
-        # self.config.read(os.path.join("src/config", "config.ini"))
+        self.config = configparser.ConfigParser()
+        self.config.read(Path("src/config") / "config.ini")
 
         # Load the directories for the game assets
         self.images = Path("assets/images/")
         self.resources = Path("assets/resources/")
         self.fonts = Path("assets/fonts/")
-        # self.data = os.path.join("data")
-        FontManager.load_font(f"{self.fonts}palm-pilot-small.ttf")
-        FontManager.load_font(f"{self.fonts}palm-pilot-bold.ttf")
-        FontManager.load_font(f"{self.fonts}palm-pilot-large.ttf")
-        FontManager.load_font(f"{self.fonts}palm-pilot-large-bold.ttf")
+        self.data = Path("data")
+        FontManager.load_font(self.fonts / "palm-pilot-small.ttf")
+        FontManager.load_font(self.fonts / "palm-pilot-bold.ttf")
+        FontManager.load_font(self.fonts / "palm-pilot-large.ttf")
+        FontManager.load_font(self.fonts / "palm-pilot-large-bold.ttf")
 
     @staticmethod
     def _build_styles() -> None:

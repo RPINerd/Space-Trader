@@ -8,19 +8,18 @@
         python ui_preview.py <state>
 """
 
-import os
 import sys
 import tkinter as tk
+from pathlib import Path
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+sys.path.append(str(Path(__file__).parent.parent))
 from src import constants as c
-from src.screens.gamescreens import SystemInfo
 from src.screens.screen_manager import SCREENS
 from src.utils import FontManager
 
 
-def main(state):
-
+def main(state: str) -> None:
+    """Load a single UI state for previewing purposes"""
     preview = tk.Tk()
     preview.title("Space Trader")
     preview.minsize(str(160 * c.SCALAR), str(160 * c.SCALAR))
@@ -28,16 +27,19 @@ def main(state):
     preview.resizable(False, False)
     preview.configure(bg=c.BKG_HEX)
 
-    fonts = os.path.join("assets/fonts/")
-    FontManager.load_font(f"{fonts}palm-pilot-small.ttf")
-    FontManager.load_font(f"{fonts}palm-pilot-bold.ttf")
-    FontManager.load_font(f"{fonts}palm-pilot-large.ttf")
-    FontManager.load_font(f"{fonts}palm-pilot-large-bold.ttf")
+    fonts = Path(__file__).parent / "assets" / "fonts"
+    FontManager.load_font(fonts / "palm-pilot-small.ttf")
+    FontManager.load_font(fonts / "palm-pilot-bold.ttf")
+    FontManager.load_font(fonts / "palm-pilot-large.ttf")
+    FontManager.load_font(fonts / "palm-pilot-large-bold.ttf")
 
-    if state == "I":
-        SystemInfo(preview)
-    else:
-        print(f"Invalid state: {state}")
+    try:
+        screen_class = SCREENS[state]["class"]
+        if screen_class is None:
+            raise ValueError(f"Screen {state} does not have a class defined")
+        screen_class(preview, SCREENS[state]["title"], None)
+    except ValueError as e:
+        print(e)
     preview.mainloop()
 
 
