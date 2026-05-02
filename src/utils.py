@@ -8,10 +8,9 @@
     Likely could refactor these into the respective modules, but for now they are here.
 """
 
-import os
 import shutil
 import sys
-from typing import Union
+from pathlib import Path
 
 
 class FontManager:
@@ -26,8 +25,8 @@ class FontManager:
         # Linux
         if sys.platform.startswith("linux"):
             try:
-                if not os.path.isdir(os.path.expanduser(cls.linux_font_path)):
-                    os.mkdir(os.path.expanduser(cls.linux_font_path))
+                if not Path.expanduser(cls.linux_font_path).is_dir():
+                    Path.mkdir(Path.expanduser(cls.linux_font_path), parents=True, exist_ok=True)
                 return True
             except Exception as err:
                 sys.stderr.write("FontManager error: " + str(err) + "\n")
@@ -38,7 +37,7 @@ class FontManager:
             return True
 
     @classmethod
-    def windows_load_font(cls, font_path: Union[str, bytes], private: bool = True, enumerable: bool = False) -> bool:
+    def windows_load_font(cls, font_path: str | bytes, private: bool = True, enumerable: bool = False) -> bool:
         """
         Load font on Windows OS (hopefully)
 
@@ -73,7 +72,7 @@ class FontManager:
         # Linux
         if sys.platform.startswith("linux"):
             try:
-                shutil.copy(font_path, os.path.expanduser(cls.linux_font_path))
+                shutil.copy(font_path, Path.expanduser(cls.linux_font_path))
                 return True
             except Exception as err:
                 sys.stderr.write("FontManager error: " + str(err) + "\n")

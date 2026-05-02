@@ -6,7 +6,6 @@
     This file is the main game file. It shows the splash screen, creates the main window and starts the game.
 """
 
-import os
 import tkinter as tk
 from pathlib import Path
 from tkinter import ttk
@@ -20,7 +19,10 @@ from src.utils import FontManager
 
 class SpaceTrader(tk.Tk):
 
+    """"""
+
     def __init__(self, screen_x: int, screen_y: int) -> None:
+        """"""
         super().__init__()
         self.title("Space Trader")
         self.resizable(False, False)
@@ -33,9 +35,17 @@ class SpaceTrader(tk.Tk):
         # TODO eventually check for existing game and load or start new game
         self.boot()
 
-    def _center_window(self, screen_x: int, screen_y: int) -> str:
+    @staticmethod
+    def _center_window(screen_x: int, screen_y: int) -> str:
         """
         Builds a geometry string to center window on the monitor
+
+        Args:
+            screen_x (int): The width of the screen
+            screen_y (int): The height of the screen
+
+        Returns:
+            str: A string to center the geometry of the window
         """
         res = c.INTERNAL_RES * c.SCALAR
         x_adj = int((screen_x / 2) - (res / 2))
@@ -43,28 +53,25 @@ class SpaceTrader(tk.Tk):
 
         return f"{res!s}x{res!s}+{x_adj}+{y_adj}"
 
-    def _load_assets(self):
-        """
-        Loads all game assets, currently just pointers to directories
-        """
+    def _load_assets(self) -> None:
+        """Loads all game assets, currently just pointers to directories"""
         # Load the configuration file
         # self.config = configparser.ConfigParser()
         # self.config.read(os.path.join("src/config", "config.ini"))
 
         # Load the directories for the game assets
-        self.images = os.path.join("assets/images/")
-        self.resources = os.path.join("assets/resources/")
-        self.fonts = os.path.join("assets/fonts/")
+        self.images = Path("assets/images/")
+        self.resources = Path("assets/resources/")
+        self.fonts = Path("assets/fonts/")
         # self.data = os.path.join("data")
         FontManager.load_font(f"{self.fonts}palm-pilot-small.ttf")
         FontManager.load_font(f"{self.fonts}palm-pilot-bold.ttf")
         FontManager.load_font(f"{self.fonts}palm-pilot-large.ttf")
         FontManager.load_font(f"{self.fonts}palm-pilot-large-bold.ttf")
 
-    def _build_styles(self):
-        """
-        Builds the custom styles for the game
-        """
+    @staticmethod
+    def _build_styles() -> None:
+        """Builds the custom styles for the game"""
         normal_fontsize = int(-14 * c.SCALAR)
         title_fontsize = int(-16 * c.SCALAR)
         s = ttk.Style()
@@ -80,7 +87,7 @@ class SpaceTrader(tk.Tk):
         )
         s.configure("Heading.TLabel", background=c.BKG_HEX, font=("Palm Pilot Bold", normal_fontsize))
 
-    def boot(self):
+    def boot(self) -> None:
         """Starts the game"""
         CreateCommander(self).tkraise()
 
@@ -109,12 +116,9 @@ def splash() -> tuple[int, int]:
     return screen_x, screen_y
 
 
-def main():
-
-    # Show the splash screen
+def main() -> None:
+    """Show the splash screen and start the game"""
     screen_x, screen_y = splash()
-
-    # Start the main game window
     window = SpaceTrader(screen_x, screen_y)
     window.mainloop()
 

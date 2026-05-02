@@ -1,9 +1,6 @@
 """
-    Space Trader | RPINerd, 2024
-
-    An elite-inspired space trading RPG originally on PalmOS
-
     Commander Module
+
     Handles the players stats, skills and progress through the game as well as crew info.
 """
 
@@ -15,7 +12,10 @@ from .economy import SHIPS, Ship
 
 class Commander:
 
-    def __init__(self, name, pilot_skill, fighter_skill, trader_skill, engineer_skill):
+    """"""
+
+    def __init__(self, name: str, pilot_skill: int, fighter_skill: int, trader_skill: int, engineer_skill: int) -> None:
+        """"""
         self.name = name
         self.pilotSkill = pilot_skill
         self.fighterSkill = fighter_skill
@@ -31,10 +31,12 @@ class Commander:
         self.currentSystem = random.randint(0, 120)
 
     def __str__(self) -> str:
+        """Returns the name of the commander"""
         return self.name
 
     def pprint(self) -> str:
-        cmdr_string = f"Name: {self.name}\n \
+        """Pretty print of the commander stats"""
+        return f"Name: {self.name}\n \
             Skills: {self.pilotSkill}/{self.fighterSkill}/{self.traderSkill}/{self.engineerSkill}\n \
             Credits: {self.credits}\n \
             Debt: {self.debt}\n \
@@ -43,20 +45,22 @@ class Commander:
             Reputation: {self.reputation}\n \
             Police Record: {self.policeRecord}\n \
             Time Played: {self.timePlayed}"
-        return cmdr_string
 
-    def get_net_worth(self):
+    def get_net_worth(self) -> int:
+        """Returns the net worth of the commander"""
         # TODO include moon value eventually
         return self.credits + self.ship.get_value() - self.debt
 
     def get_reputation(self) -> str:
+        """Returns the string repr of the reputation of the commander"""
         return CombatReputation.get_reputation_string(self.reputation)
 
-    def get_police_record(self):
+    def get_police_record(self) -> str:
+        """Returns the string repr of the police record of the commander"""
         return CriminalRecord.get_record_string(self.policeRecord)
 
-    def pay_interest(self):
-
+    def pay_interest(self) -> None:
+        """Calculates the interest on current debt and pays it"""
         debt_interest = 0
         if self.debt > 0:
             debt_interest = max(1, self.debt * INTEREST_RATE)
@@ -65,9 +69,10 @@ class Commander:
             else:
                 self.debt += debt_interest - self.credits
                 self.credits = 0
-        self.debt = self.debt * 1.1
+        self.debt *= 1.1
 
-    def pay_insurance(self):
+    def pay_insurance(self) -> None:
+        """Calculates the insurance on the ship and pays it"""
         # ! AI generated placeholder
         insurance = self.ship.get_value() * INSURANCE_RATE
         if self.credits > insurance:
@@ -76,10 +81,21 @@ class Commander:
             self.debt += insurance - self.credits
             self.credits = 0
 
-    def get_debt(self):
+    def get_debt(self) -> int:
+        """Returns the current debt of the commander"""
         return self.debt
 
-    def improve_skill(self, skill: int, improvement: int):
+    def improve_skill(self, skill: int, improvement: int) -> None:
+        """
+        Improves the skill of the commander by the given amount.
+
+        Args:
+            skill (int): The skill to improve. 0 = Pilot, 1 = Fighter, 2 = Trader, 3 = Engineer
+            improvement (int): The amount to improve the skill by.
+
+        Raises:
+            ValueError: If the skill is not in the range [0-3]
+        """
         # TODO add skill cap
         if skill == Skills.PILOT:
             self.pilotSkill += improvement
@@ -92,7 +108,17 @@ class Commander:
         else:
             raise ValueError(f"Invalid skill type, expected [0-3] but got {skill}!")
 
-    def deteriorate_skill(self, skill: int, deterioration: int):
+    def deteriorate_skill(self, skill: int, deterioration: int) -> None:
+        """
+        Deteriorates the skill of the commander by the given amount.
+
+        Args:
+            skill (int): The skill to deteriorate. 0 = Pilot, 1 = Fighter, 2 = Trader, 3 = Engineer
+            deterioration (int): The amount to deteriorate the skill by.
+
+        Raises:
+            ValueError: If the skill is not in the range [0-3]
+        """
         # TODO prevent from going below 1
         if skill == Skills.PILOT:
             self.pilotSkill -= deterioration
@@ -108,7 +134,10 @@ class Commander:
 
 class Crew:
 
-    def __init__(self, id):
+    """Handles the mercenaries and crew members of the ship."""
+
+    def __init__(self, id: int) -> None:
+        """"""
         self.id = id
         self.pilotSkill = None
         self.fighterSkill = None
@@ -117,43 +146,47 @@ class Crew:
         self.currentSystem = None
 
     def __str__(self) -> str:
+        """Returns the name of the crew member"""
         return MERCENARYNAMES[self.id]
 
     def __repr__(self) -> str:
-        return self.id
+        """Returns the id of the crew member"""
+        return str(self.id)
 
-    def get_salary(self):
+    def get_salary(self) -> int:
         """
         I think special crewmembers are free? Or something like that
 
         return Consts.SpecialCrewMemberIds.Contains(Id) || Id == CrewMemberId.Zeethibal ? 0 :
+
+        Returns:
+            int: The salary of the crew member
         """
         return sum([self.pilotSkill, self.fighterSkill, self.traderSkill, self.engineerSkill]) * 3
 
-    def get_skills(self):
+    def get_skills(self) -> list[int]:
+        """Returns the skills of the crew member as a list"""
         return [self.pilotSkill, self.fighterSkill, self.traderSkill, self.engineerSkill]
 
-    def mod_random_skill(self, amount: int):
+    def mod_random_skill(self, amount: int) -> None:
         """
-        Modifies a random skill by the given amount. The value can be negative,
-        but the skill will not go below 1 or above {MAXSKILL}.
+        Modifies a random skill by the given amount.
 
-        #TODO In source, looks like there is some recalculation done as well
-            int	curTrader	= Game.CurrentGame.Commander.Ship.Trader;
-                                Skills[skill]	+= amount;
-                                if (Game.CurrentGame.Commander.Ship.Trader != curTrader)
-                                        Game.CurrentGame.RecalculateBuyPrices(Game.CurrentGame.Commander.CurrentSystem);
+        The value can be negative, but the skill will not go below 1 or above {MAXSKILL}.
 
-        param amount: The amount to modify the skill by.
+        TODO In source, looks like there is some recalculation done as well
+        int	curTrader = Game.CurrentGame.Commander.Ship.Trader;
+        Skills[skill] += amount;
+        if (Game.CurrentGame.Commander.Ship.Trader != curTrader)
+            Game.CurrentGame.RecalculateBuyPrices(Game.CurrentGame.Commander.CurrentSystem);
+
+        Args:
+            amount (int): The amount to modify the skill by. Can be negative.
         """
-        # Create a sublist of skills that will be within the bounds
         skills = [skill for skill in self.get_skills() if 1 <= skill + amount <= MAXSKILL]
 
-        # If there are no skills that can be modified, return
         if not skills:
             return
-        # Choose a random skill from the sublist
-        skill = random.choice(skills)
 
-        # Modify the skill by the given amount
+        skill = random.choice(skills)
         skill += amount

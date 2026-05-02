@@ -10,6 +10,24 @@ from .constants import Activity, Size, Skills, TechLevel
 
 
 class PoliticalSystem:
+
+    """
+    Represents a political system in the game.
+
+    Attributes:
+        name (str): The name of the political system.
+        stability (int): The stability level of the political system.
+        law (int): The law enforcement level of the political system.
+        crime (int): The crime rate in the political system.
+        economy (int): The economic strength of the political system.
+        minTech (int): The minimum technology level required.
+        maxTech (int): The maximum technology level supported.
+        bribe_difficulty (int): The difficulty level of bribing officials.
+        drug_tolerance (bool): Whether drugs are tolerated in this system.
+        firearm_tolerance (bool): Whether firearms are tolerated in this system.
+        tradeItemId (int): The ID of the trade item associated with this system.
+    """
+
     ANARCHY = 0
     CAPITALIST = 1
     COMMUNIST = 2
@@ -42,6 +60,7 @@ class PoliticalSystem:
         firearm_tolerance: bool,
         tradeItemId: int,
     ):
+        """Initializes a PoliticalSystem instance"""
         self.name = name
         self.stability = stability
         self.law = law
@@ -54,36 +73,42 @@ class PoliticalSystem:
         self.firearm_tolerance = firearm_tolerance
         self.tradeItemId = tradeItemId
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Returns the string representation of the political system"""
         return self.name
 
-    def __repr__(self):
+    def __repr__(self) -> str:
+        """Returns the detailed string representation of the political system"""
         return f"{self.name} ({self.stability}, {self.law}, {self.crime}, {self.economy})"
 
     def firearms_ok(self) -> bool:
+        """Checks if firearms are tolerated in the political system."""
         return self.firearm_tolerance
 
     def drugs_ok(self) -> bool:
+        """Checks if drugs are tolerated in the political system"""
         return self.drug_tolerance
 
 
 class Ware:
-    """
-    Class containing the trade wares and their respective attributes.
 
-    params: name - Trade item name
-    params: tech_level_prod - Tech level needed for production
-    params: tech_level_min - Tech level needed to use
-    params: tech_level_max - Tech level which produces this item the most
-    params: max_price - Medium price at lowest tech level
-    params: min_price - Price increase per tech level
-    params: pressure_price - Max percentage above or below calculated price
-    params: pressure - Price increases considerably when this event occurs
-    params: special_resource_drop - When this resource is available, this trade item is cheap
-    params: special_resource_hike - When this resource is available, this trade item is expensive
-    params: min_prod - Minimum price to buy/sell in orbit
-    params: max_prod - Maximum price to buy/sell in orbit
-    params: quantity - Roundoff price for trade in orbit
+    """
+    Represents trade wares and their respective attributes.
+
+    Attributes:
+        name (str): Trade item name.
+        tech_level_prod (int): Tech level needed for production.
+        tech_level_min (int): Tech level needed to use.
+        tech_level_max (int): Tech level which produces this item the most.
+        max_price (int): Medium price at lowest tech level.
+        min_price (int): Price increase per tech level.
+        pressure_price (int): Max percentage above or below calculated price.
+        pressure (int): Price increases considerably when this event occurs.
+        special_resource_drop (int): When this resource is available, this trade item is cheap.
+        special_resource_hike (int): When this resource is available, this trade item is expensive.
+        min_prod (int): Minimum price to buy/sell in orbit.
+        max_prod (int): Maximum price to buy/sell in orbit.
+        quantity (int): Roundoff price for trade in orbit.
     """
 
     WATER = 0
@@ -100,10 +125,12 @@ class Ware:
 
     @staticmethod
     def enum() -> list[int]:
+        """Returns a list of all trade item IDs"""
         return range(10)
 
     @staticmethod
     def lst() -> list[str]:
+        """Returns a list of all trade item names"""
         return [
             "Water",
             "Furs",
@@ -135,6 +162,7 @@ class Ware:
         max_prod: int,
         quantity: int,
     ):
+        """Initializes a Ware instance"""
         self.name = name
         self.tech_level_prod = tech_level_prod
         self.tech_level_min = tech_level_min
@@ -149,25 +177,30 @@ class Ware:
         self.max_prod = max_prod
         self.quantity = quantity
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Returns the string representation of the ware"""
         return self.name
 
-    def __repr__(self):
+    def __repr__(self) -> str:
+        """Returns the detailed string representation of the ware"""
         return self.name
 
 
 class Equipment:
+    """"""
     WEAPON = 0
     SHIELD = 1
     GADGET = 2
 
     def __init__(self, name, price, tech_level):
+        """Initializes an Equipment instance"""
         self.name = name
         self.price = price
         self.tech_level = tech_level
 
     @staticmethod
     def sale_list() -> list[str]:
+        """Returns a list of equipment names available for sale"""
         return [
             "Pulse laser",
             "Beam laser",
@@ -183,7 +216,7 @@ class Equipment:
 
 
 class Weapon(Equipment):
-
+    """"""
     PULSELASER = 0
     BEAMLASER = 1
     MILITARYLASER = 2
@@ -191,7 +224,8 @@ class Weapon(Equipment):
     PHOTONDISRUPTOR = 4
     QUANTUMDISRUPTOR = 5
 
-    def __init__(self, name, damage, unk_bool, price, tech_level, unknown):
+    def __init__(self, name: str, damage: int, unk_bool: bool, price: int, tech_level: int, unknown: int):
+        """Initializes a Weapon instance"""
         super().__init__(name, price, tech_level)
         self.damage = damage
         self.unk_bool = unk_bool
@@ -199,18 +233,21 @@ class Weapon(Equipment):
 
 
 class Shield(Equipment):
+    """"""
     ENERGY = 0
     REFLECTIVE = 1
     LIGHTNING = 2
 
     # TODO what are points and unknown?
-    def __init__(self, name, points, price, tech_level, unknown):
+    def __init__(self, name: str, points: int, price: int, tech_level: int, unknown: int):
+        """Initialize a Shield instance"""
         super().__init__(name, price, tech_level)
         self.points = points
         self.unknown = unknown
 
 
 class Gadget(Equipment):
+    """"""
     CARGOBAYS = 0
     AUTOREPAIR = 1
     NAVIGATION = 2
@@ -220,13 +257,14 @@ class Gadget(Equipment):
     SMUGGLERHOLD = 6
 
     def __init__(self, name, skill, price, tech_level, unknown):
+        """Initialize a Gadget instance"""
         super().__init__(name, price, tech_level)
         self.skill = skill
         self.unknown = unknown
 
 
 class Ship:
-
+    """"""
     # ESCAPEPOD = 0 #? Not in source
     FLEA = 0
     GNAT = 1
@@ -252,6 +290,7 @@ class Ship:
 
     @staticmethod
     def lst() -> list[str]:
+        """"""
         return [
             "Flea",
             "Gnat",
@@ -274,6 +313,7 @@ class Ship:
 
     @staticmethod
     def sale_lst() -> list[str]:
+        """"""
         return [
             "Flea",
             "Gnat",
