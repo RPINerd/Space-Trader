@@ -1,7 +1,16 @@
+"""
+    Screens module
+
+    Defines the elements that make up an individual screen in the game
+"""
+
+import logging
 import tkinter as tk
 from tkinter import ttk
 
 from src.constants import BKG_HEX, FRG_HEX, INTERNAL_RES, SCALAR
+
+logger = logging.getLogger(__name__)
 
 
 class Heading(ttk.Frame):
@@ -59,7 +68,7 @@ class Heading(ttk.Frame):
         # print(f"event type: {type(event)}\nevent: {event}, key: {key}")
         # for attrib in getattr(event, "__dict__", {}):
         #     print(f"attrib: {attrib}")
-        print(f"Shortcut triggered: {key}")
+        logger.debug("Shortcut triggered: %s", key)
         self.parent.manager.go_to_screen(key)
 
 
@@ -90,11 +99,11 @@ class Screen(ttk.Frame):
         self.create_widgets()
 
     def change_screen(self, event):
-        print(f"Changing screen to {event.keysym}")
+        logger.debug("Changing screen to %s", event.keysym)
         self.manager.go_to_screen(event.keysym.upper())
 
     def create_widgets(self):
-        #! Placeholder id frame
+        # ! Placeholder id frame
         self.id_frame = ttk.Frame(self)
         ttk.Label(self.id_frame, text=self.screen_title, justify="center").pack(fill="x", expand=True)
         ttk.Label(self.id_frame, text="Not Implemented", justify="center").pack(fill="x", expand=True)

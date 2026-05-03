@@ -12,6 +12,10 @@ __pycache__/
 .venv
 venv/
 
+# Logs
+logs/
+*.log
+
 # Scratch/temp files
 *.tmp
 Notes.md

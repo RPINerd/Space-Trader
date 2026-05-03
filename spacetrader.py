@@ -1,21 +1,25 @@
 """
-    Space Trader (PalmOS) | RPINerd, 08/20/24
+    Space Trader (PalmOS) | RPINerd, 05/03/26
 
     An early space strategy RPG game inspired by Elite and Solar Wars for PalmOS.
 
-    This file is the main game file. It shows the splash screen, creates the main window and starts the game.
+    This is the main game file. It shows the splash screen, creates the main window and starts the game.
 """
 
 import configparser
+import logging
 import tkinter as tk
 from pathlib import Path
 from tkinter import ttk
 
 import src.constants as c
+from src.log import setup_logging
 from src.screens.char_create import CreateCommander
 from src.screens.screen_manager import ScreenManager
 from src.universe import Universe
 from src.utils import FontManager
+
+logger = logging.getLogger(__name__)
 
 
 class SpaceTrader(tk.Tk):
@@ -110,7 +114,7 @@ def splash() -> tuple[int, int]:
     splash_label.pack(expand=True, fill="both")
 
     c.GAME["universe"] = Universe()
-    splash.after(1000, lambda: [splash.destroy(), print("Splash screen closed")])
+    splash.after(1000, lambda: [splash.destroy(), logger.debug("Splash screen closed")])
     splash.mainloop()
 
     # Return the monitor resolution just to reduce the re-polling in main window
@@ -119,6 +123,7 @@ def splash() -> tuple[int, int]:
 
 def main() -> None:
     """Show the splash screen and start the game"""
+    setup_logging()
     screen_x, screen_y = splash()
     window = SpaceTrader(screen_x, screen_y)
     window.mainloop()

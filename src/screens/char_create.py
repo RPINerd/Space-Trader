@@ -1,23 +1,20 @@
-"""
-    Space Trader (PalmOS) | RPINerd, 2024
-
-    Character creation screen
-"""
-
+"""Character creation screen"""
+import logging
 import tkinter as tk
 from tkinter import ttk
 
 from ..commander import Commander
 from ..constants import BKG_HEX, FRG_HEX, GAME, Difficulty
 
+logger = logging.getLogger(__name__)
+
 
 class StatAdjuster(ttk.Frame):
 
-    """
-    A frame that contains a label, a decrement button, a value label, and an increment button.
-    """
+    """A frame that contains a label, a decrement button, a value label, and an increment button."""
 
-    def __init__(self, parent, label_text, initial_value, row, column, **kwargs) -> None:
+    def __init__(self, parent, label_text: str, initial_value: int, row: int, column: int, **kwargs: dict) -> None:
+        """"""
         super().__init__(parent, **kwargs)
 
         global points_pool
@@ -33,15 +30,18 @@ class StatAdjuster(ttk.Frame):
         self.increment.grid(row=row, column=column + 3)
 
     def get_value(self) -> int:
+        """Returns the current value of the stat adjuster."""
         return self.value.get()
 
     def decrement_value(self) -> None:
+        """Decrements the value of the stat adjuster if possible."""
         if self.value.get() == 1:
             return
         self.value.set(max(self.value.get() - 1, 1))
         points_pool.set(points_pool.get() + 1)
 
     def increment_value(self) -> None:
+        """Increments the value of the stat adjuster if possible."""
         if points_pool.get() == 0 or self.value.get() == 10:
             return
         self.value.set(min(self.value.get() + 1, 10))
@@ -50,14 +50,17 @@ class StatAdjuster(ttk.Frame):
 
 class CreateCommander(ttk.Frame):
 
+    """The screen for creating a new commander."""
+
     def __init__(self, parent) -> None:
         self.parent = parent
         super().__init__(parent)
+        """Initializes the CreateCommander screen and places it on the parent window."""
         self.place(x=0, y=0, relwidth=1, relheight=1)
         self.create_widgets()
 
     def create_widgets(self):
-
+        """Creates the widgets for the CreateCommander screen."""
         # Initial values
         self.cmdr_name = tk.StringVar(value="Jameson")
         self.diff_current_value = 2
@@ -122,10 +125,11 @@ class CreateCommander(ttk.Frame):
         self.start_button.pack(expand=True)
 
     def dec_difficulty(self) -> None:
-        print("Decreasing difficulty")
-        print("Current value:", self.diff_current_value)
+        """Decreases the difficulty of the game."""
+        logger.debug("Decreasing difficulty")
+        logger.debug("Current value: %s", self.diff_current_value)
         new_difficulty = max(self.diff_current_value - 1, 0)
-        print("New value:", new_difficulty)
+        logger.debug("New value: %s", new_difficulty)
         if new_difficulty == 0:
             self.difficulty_dec["state"] = "disabled"
         self.difficulty_inc["state"] = "enabled"
@@ -133,10 +137,11 @@ class CreateCommander(ttk.Frame):
         self.diff_current_value = new_difficulty
 
     def inc_difficulty(self) -> None:
-        print("Increasing difficulty")
-        print("Current value:", self.diff_current_value)
+        """Increases the difficulty of the game."""
+        logger.debug("Increasing difficulty")
+        logger.debug("Current value: %s", self.diff_current_value)
         new_difficulty = min(self.diff_current_value + 1, 4)
-        print("New value:", new_difficulty)
+        logger.debug("New value: %s", new_difficulty)
         if new_difficulty == 4:
             self.difficulty_inc["state"] = "disabled"
         self.difficulty_dec["state"] = "enabled"
@@ -144,13 +149,16 @@ class CreateCommander(ttk.Frame):
         self.diff_current_value = new_difficulty
 
     def cmdr_create(self) -> None:
+        """
+        Creates a new commander based on the inputted values
 
         # TODO Show a message box for invalid submissions
+        """
         if points_pool.get() != 0:
-            print("You have unspent skill points!")
+            logger.warning("Commander creation failed: unspent skill points remaining")
             return
         if self.cmdr_name.get() == "":
-            print("You must enter a name!")
+            logger.warning("Commander creation failed: no name entered")
             return
         cmdr = Commander(
             self.cmdr_name.get(),
@@ -161,6 +169,6 @@ class CreateCommander(ttk.Frame):
         )
         GAME["commander"] = cmdr
         GAME["difficulty"] = self.diff_current_value
-        print(cmdr.pprint())
+        logger.debug("Created commander: %s", cmdr.pprint())
         self.destroy()
         self.parent.manager.build_screens()

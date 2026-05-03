@@ -1,13 +1,11 @@
 """
-    Space Trader | RPINerd, 2024
-
-    An elite-inspired space trading RPG originally on PalmOS
-
     Universe Module
+
     This module houses the classes and functions for the game universe, which subsequently
     contains all the systems, their respective governments and traits.
 """
 
+import logging
 from math import floor, pow, sqrt
 from random import choice, randint
 
@@ -24,6 +22,8 @@ from .constants import (
     TechLevel,
 )
 from .economy import PoliticalSystem, Ware
+
+logger = logging.getLogger(__name__)
 
 TMPGAMEDIFFICULTY = 1
 PLANET_NAMES = {
@@ -978,7 +978,7 @@ class Universe:
         """"""
         self.planets: dict[int, Planet] = {}
         self.wormholes: list = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        print("Generating Universe...")
+        logger.info("Generating Universe...")
         self.generate_planets()
         self.extra_planet_shuffle()
 

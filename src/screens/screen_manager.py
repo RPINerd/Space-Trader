@@ -1,3 +1,10 @@
+"""
+    Screen Manager Module
+
+    Manages the different screens in the game and handles navigation between them.
+"""
+import logging
+
 from .gamescreens import (
     AvgPrices,
     Bank,
@@ -18,6 +25,8 @@ from .gamescreens import (
     TargetSystem,
 )
 from .screens import Screen
+
+logger = logging.getLogger(__name__)
 
 SCREENS = {
     "I": {
@@ -103,7 +112,7 @@ class ScreenManager:
         except Exception as e:
             raise Exception(f"Unexpected error in go_to_screen: {e}")
         else:
-            print(f"Switched to screen {key} ({self.screens[key]})")
+            logger.debug("Switched to screen %s (%s)", key, self.screens[key])
 
     def build_screens(self):
         self.screens: dict[str, Screen] = {

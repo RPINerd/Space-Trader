@@ -1,9 +1,6 @@
 """
-    Space Trader | RPINerd, 2024
-
-    An elite-inspired space trading RPG originally on PalmOS
-
     Economy Module
+
     This module contains the classes and functions for the game economy such as trade wares and prices.
 """
 

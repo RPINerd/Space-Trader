@@ -1,9 +1,6 @@
 """
-    Space Trader | RPINerd, 2024
-
-    An elite-inspired space trading RPG originally on PalmOS
-
     Utils Module
+
     The utils module has a couple of functions that were separated in the original codebase.
     Likely could refactor these into the respective modules, but for now they are here.
 """
@@ -22,7 +19,7 @@ FR_NOT_ENUM = 0x20
 
 class FontManager:
 
-    """"""
+    """Manages font loading and initialization for different platforms."""
 
     linux_font_path = Path("~/.fonts/")
 

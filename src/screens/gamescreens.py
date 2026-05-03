@@ -1,4 +1,8 @@
-""""""
+"""
+    Game Screens Module
+
+    Defines the various screens that make up the game, such as the system info screen, shipyard, etc.
+"""
 
 from random import randint
 from tkinter import ttk

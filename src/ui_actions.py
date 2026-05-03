@@ -1,5 +1,5 @@
 """
-    Space Trader (PalmOS) | RPINerd, 2024
+    UI Actions Module
 
     The thought with this file is to have a universal file that contains all the
     actions that the user can take in the game.
@@ -7,8 +7,12 @@
     have to worry about rewriting the game logic.
 """
 
+import logging
+
 import src.constants as c
 import src.economy as e
+
+logger = logging.getLogger(__name__)
 
 
 # Disordered list of user interactions
@@ -52,7 +56,7 @@ def buy_fuel():
 
 
 def buy_news():
-    print("Buying news!")
+    logger.debug("Buying news!")
 
 
 def warp():
@@ -148,7 +152,7 @@ def fire_crew():
 
 def get_credits() -> str:
     current_balance = c.GAME["commander"].credits
-    print(f"Current balance: {current_balance}")
+    logger.debug("Current balance: %s", current_balance)
     return f"Cash: {current_balance} cr."
 
 
@@ -167,9 +171,9 @@ def get_insurance_rate() -> str:
 
 def buy_insurance():
     # TODO
-    print("Buying insurance!")
+    logger.debug("Buying insurance!")
 
 
 def get_loan():
     # TODO
-    print("Getting a loan!")
+    logger.debug("Getting a loan!")
