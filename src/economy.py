@@ -1,5 +1,6 @@
 """
     Space Trader | RPINerd, 2024
+
     An elite-inspired space trading RPG originally on PalmOS
 
     Economy Module
@@ -224,7 +225,7 @@ class Weapon(Equipment):
     PHOTONDISRUPTOR = 4
     QUANTUMDISRUPTOR = 5
 
-    def __init__(self, name: str, damage: int, unk_bool: bool, price: int, tech_level: int, unknown: int):
+    def __init__(self, name: str, damage: int, unk_bool: bool, price: int, tech_level: int, unknown: int) -> None:
         """Initializes a Weapon instance"""
         super().__init__(name, price, tech_level)
         self.damage = damage
@@ -239,7 +240,7 @@ class Shield(Equipment):
     LIGHTNING = 2
 
     # TODO what are points and unknown?
-    def __init__(self, name: str, points: int, price: int, tech_level: int, unknown: int):
+    def __init__(self, name: str, points: int, price: int, tech_level: int, unknown: int) -> None:
         """Initialize a Shield instance"""
         super().__init__(name, price, tech_level)
         self.points = points
@@ -365,7 +366,22 @@ class Ship:
         self.trader_use = trader_use
         self.tech_level = tech_level
 
-    def get_value(self) -> int:
+    def get_value(self, for_insurance: bool = False) -> int:
+        """
+        Calculates the current value of the ship and its' equipment
+
+        TODO just a placeholder for now, mirror source code
+        Args:
+            for_insurance (bool): Whether to calculate the value for insurance purposes, which uses a different formula. Defaults to False.
+
+        Returns:
+            int: The calculated value of the ship.
+        """
+        if for_insurance:
+            # TODO there is no tribble penalty for this calculation, check source function "CurrentShipPriceWithoutCargo"
+            ship_value = self.price * 1.1
+            return int(ship_value)
+
         return self.price
 
 

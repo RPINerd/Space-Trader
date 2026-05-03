@@ -6,7 +6,7 @@
 
 import random
 
-from .constants import INSURANCE_RATE, INTEREST_RATE, MAXSKILL, MERCENARYNAMES, CombatReputation, CriminalRecord, Skills
+from .constants import INTEREST_RATE, MAX_NOCLAIM, MAXSKILL, MERCENARYNAMES, CombatReputation, CriminalRecord, Skills
 from .economy import SHIPS, Ship
 
 
@@ -29,6 +29,8 @@ class Commander:
         self.policeRecord = 0
         self.timePlayed = 0
         self.currentSystem = random.randint(0, 120)
+        self.noClaimDays = 0
+        self.insurance = False
 
     def __str__(self) -> str:
         """Returns the name of the commander"""
@@ -72,14 +74,23 @@ class Commander:
         self.debt *= 1.1
 
     def pay_insurance(self) -> None:
-        """Calculates the insurance on the ship and pays it"""
-        # ! AI generated placeholder
-        insurance = self.ship.get_value() * INSURANCE_RATE
-        if self.credits > insurance:
-            self.credits -= insurance
+        """
+        Calculates the per-jump insurance payment on the ship and pays it
+
+        Source code uses integer truncation rather than floating point math, so we do the same to keep functionality faithful
+        """
+        if not self.insurance:
+            return
+
+        ship_value_insured = self.ship.get_value(True)
+        base = (ship_value_insured * 5) // 2000
+        payment = max(1, base * (100 - min(self.noClaim, MAX_NOCLAIM)) // 100)
+        if self.credits >= payment:
+            self.credits -= payment
         else:
-            self.debt += insurance - self.credits
+            self.debt += payment - self.credits
             self.credits = 0
+        self.noClaim += 1
 
     def get_debt(self) -> int:
         """Returns the current debt of the commander"""

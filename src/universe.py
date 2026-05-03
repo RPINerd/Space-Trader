@@ -526,29 +526,29 @@ TRADEITEMS = {
 }
 
 
-class Planet:
+class Planet:  # noqa: PLR0904 (too many public methods)
 
     """
     Object representing a single planet in the game world.
 
-    params: name - planet name
-    params: x - x coordinate of the planet
-    params: y - y coordinate of the planet
-    params: size - planet size
-    params: tech_level - tech level of the planet
-    params: government - political system type of the planet
-    params: soci_pressure - current pressure on the planet
-    params: special_resource - current special resource of the planet
-    params: quest_system - whether the planet is a quest host
-    params: trade_items - items available for trade on the planet
-    #? params: count_down - countdown
-    params: visited - whether the planet has been visited
-    #? params: shipyard_id - id of the shipyard in the system
+    name - planet name
+    x - x coordinate of the planet
+    y - y coordinate of the planet
+    size - planet size
+    tech_level - tech level of the planet
+    government - political system type of the planet
+    soci_pressure - current pressure on the planet
+    special_resource - current special resource of the planet
+    quest_system - whether the planet is a quest host
+    trade_items - items available for trade on the planet
+    #? count_down - countdown
+    visited - whether the planet has been visited
+    #? shipyard_id - id of the shipyard in the system
     """
 
     def __init__(
         self,
-        name,
+        name: str,
         x: int,
         y: int,
         size: int,
@@ -556,7 +556,8 @@ class Planet:
         tech_level: int,
         soci_pressure: int,
         special_resource: int,
-    ):
+    ) -> None:
+        """"""
         self.name = name
         self.x = x
         self.y = y
@@ -575,9 +576,11 @@ class Planet:
 
     # Basic Info Interfaces
     def __str__(self) -> str:
+        """"""
         return self.name
 
     def __repr__(self) -> str:
+        """Provides a string representation of the planet for debugging purposes"""
         repr_str = f"{self.name} ({self.x}, {self.y}), \
             {Size.name(self.size)}, {self.get_government_name()}, \
             {self.get_tech_level()}, {SpecialResource.name(self.special_resource)}, \
@@ -585,7 +588,8 @@ class Planet:
         return repr_str
 
     def pprint(self) -> str:
-        info = f"""---------------
+        """Provides a pretty print string of the planet info for the system info screen"""
+        return f"""---------------
         Planet: {self.name} at ({self.x}, {self.y})\n \
         Size: {Size.name(self.size)}\n \
         Tech Level: {self.tech_level}\n \
@@ -596,7 +600,6 @@ class Planet:
         Pressure: {self.soci_pressure}\n \
         ---------------
         """
-        return info
 
     @staticmethod
     def system_info_headers() -> list[str]:
@@ -613,6 +616,7 @@ class Planet:
         ]
 
     def system_info(self) -> list[str]:
+        """"""
         return [
             self.name,
             Size.name(self.size),
@@ -624,27 +628,34 @@ class Planet:
         ]
 
     def get_location(self) -> tuple[int, int]:
+        """"""
         return (self.x, self.y)
 
     def get_size(self) -> int:
+        """"""
         return self.size
 
     def get_tech_level(self) -> int:
+        """"""
         return self.tech_level
 
     def set_visited(self) -> None:
+        """"""
         self.visited = True
 
-    def set_tech_level(self, value) -> None:
+    def set_tech_level(self, value: int) -> None:
+        """"""
         self.tech_level = value
 
     # TODO implement
     def dest_is_ok(self) -> bool:
         """
         Check if the destination is reachable with the current fuel level
+
         Also account for wormholes
 
-        return: bool - whether the destination is reachable
+        Returns:
+            bool: whether the destination is reachable
         """
         raise NotImplementedError("Planet.dest_is_ok not implemented")
         # comm = Game.current_game.commander
@@ -745,15 +756,17 @@ class Planet:
             # Finally just make sure it's not negative
             self.trade_items[item_id] = max(self.trade_items[item_id], 0)
 
-    def is_item_traded(self, item) -> bool:
+    def is_item_traded(self, item: int) -> bool:
         """
         Given an item ID, check with the planets political system to see if it can be traded
 
-        params: item - item ID to check
+        Args:
+            item (int): item ID to check
 
-        return: bool - whether the item can be traded
+        Returns:
+            bool: whether the item can be traded
         """
-        if item not in [Ware.FIREARMS, Ware.NARCOTICS]:
+        if item not in {Ware.FIREARMS, Ware.NARCOTICS}:
             return True
 
         if item == Ware.FIREARMS:
@@ -764,8 +777,9 @@ class Planet:
 
         raise ValueError(f"Item ID {item} not valid!")
 
-    def item_used(self, item):
-        raise NotImplementedError("Planet.item_used not implemented")
+    def item_used(self, item: Ware) -> bool:
+        """"""
+        raise NotImplementedError(f"Planet.item_used not implemented. Item: {item}")
         # return (
         #     (item.item_type != d.NARCOTICS or self.get_political_system().is_drugs_ok())
         #     and (item.item_type != d.FIREARMS or self.get_political_system().is_firearms_ok())
@@ -773,23 +787,28 @@ class Planet:
         # )
 
     def get_inventory(self):
+        """"""
         return self.trade_items
 
     # Misc Interfaces
     # TODO implement
     def get_mercenaries_for_hire(self) -> list:
         """
-        Commander			cmdr		= Game.CurrentGame.Commander;
-        CrewMember[]	mercs		= Game.CurrentGame.Mercenaries;
-        ArrayList			forHire	= new ArrayList(3);
+        Get a list of mercenaries available for hire on the planet
 
-        for (int i = 1; i < mercs.Length; i++)
-        {
+        Source code:
+
+            Commander			cmdr		= Game.CurrentGame.Commander;
+            CrewMember[]	mercs		= Game.CurrentGame.Mercenaries;
+            ArrayList			forHire	= new ArrayList(3);
+
+            for (int i = 1; i < mercs.Length; i++)
+            {
                 if (mercs[i].CurrentSystem == cmdr.CurrentSystem && !cmdr.Ship.HasCrew(mercs[i].Id))
-                        forHire.Add(mercs[i]);
-        }
+                    forHire.Add(mercs[i]);
+            }
 
-        return (CrewMember[])forHire.ToArray(typeof(CrewMember));
+            return (CrewMember[])forHire.ToArray(typeof(CrewMember));
         """
         raise NotImplementedError("Planet.get_mercenaries_for_hire not implemented")
         # cmdr = Game.current_game.commander
@@ -800,14 +819,18 @@ class Planet:
         # ]
 
     def is_quest_system(self) -> bool:
+        """Check whether the planet is a quest system or not"""
         return self.quest_system
 
-    def set_quest_system(self, value) -> None:
+    def set_quest_system(self, value: bool) -> None:
+        """Set whether the planet is a quest system or not"""
         self.quest_system = value
 
     # TODO implement
-    def show_quest_button(self):
+    def show_quest_button(self) -> None:
         """
+        Soruce code:
+
         public bool ShowSpecialButton()
         {
         Game	game	= Game.CurrentGame;
@@ -951,14 +974,15 @@ class Universe:
 
     """Responsible for managing the game world, including planet locations and attributes."""
 
-    def __init__(self):
+    def __init__(self) -> None:
+        """"""
         self.planets: dict[int, Planet] = {}
         self.wormholes: list = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         print("Generating Universe...")
         self.generate_planets()
         self.extra_planet_shuffle()
 
-    def generate_planets(self):
+    def generate_planets(self) -> None:
         """Generate the planets for the game world."""
         for id, planet_name in PLANET_NAMES.items():
 
@@ -1033,9 +1057,10 @@ class Universe:
 
         return (x, y)
 
-    def extra_planet_shuffle(self):
+    def extra_planet_shuffle(self) -> None:
         """
         This function is responsible for shuffling the planets around the universe.
+
         Apparently without this extra step, the planets with names at the beginning
         of the alphabet are all clustered in the center of the galaxy.
         """
@@ -1058,11 +1083,13 @@ def planet_distance(planet: tuple[int, int], x2: int, y2: int) -> float:
     """
     Calculate the distance between a planet and a point.
 
-    params: planet - tuple containing the x and y coordinates of the planet
-    params: x2 - x coordinate of point 2
-    params: y2 - y coordinate of point 2
+    Args:
+        planet (tuple[int, int]): tuple containing the x and y coordinates of the planet
+        x2 (int): x coordinate of point 2
+        y2 (int): y coordinate of point 2
 
-    returns: distance between the planet and the point
+    Returns:
+        float: distance between the planet and the point
     """
     return distance(planet[0], planet[1], x2, y2)
 
@@ -1071,12 +1098,14 @@ def distance(x1: int, y1: int, x2: int, y2: int) -> float:
     """
     Calculate the distance between two points.
 
-    params: x1 - x coordinate of point 1
-    params: y1 - y coordinate of point 1
-    params: x2 - x coordinate of point 2
-    params: y2 - y coordinate of point 2
+    Args:
+        x1 (int): x coordinate of point 1
+        y1 (int): y coordinate of point 1
+        x2 (int): x coordinate of point 2
+        y2 (int): y coordinate of point 2
 
-    returns: distance between the two points
+    Returns:
+        float: distance between the two points
     """
     return ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
 
@@ -1085,11 +1114,13 @@ def wormhole_exists(wormholes: list[int], a: int, b: int) -> bool:
     """
     Check if a wormhole exists at the given coordinates.
 
-    params: wormholes - list of wormholes
-    params: a - first wormhole
-    params: b - second wormhole, or -1 if only checking for any wormhole at a
+    Args:
+        wormholes (list[int]): list of wormholes
+        a (int): first wormhole
+        b (int): second wormhole, or -1 if only checking for any wormhole at a
 
-    returns: True if wormhole exists, False otherwise
+    Returns:
+        bool: True if wormhole exists, False otherwise
     """
     # TODO bit of a mess, probably should have small separate functions for each check
     if a in wormholes:
