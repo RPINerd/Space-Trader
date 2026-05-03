@@ -1,9 +1,6 @@
 """
-    Space Trader | RPINerd, 2024
-
-    An elite-inspired space trading RPG originally on PalmOS
-
     Constants Module
+
     Game constants, to be imported by other modules.
 """
 
@@ -37,11 +34,6 @@ START_CREDITS = 1000
 INTEREST_RATE = 0.1
 DEBT_WARN = 75000
 DEBT_LIMIT = 100000
-""" Insurance Info
-Insurance rate is the percentage of the ship's value that is paid as insurance daily.
-This rate begins at 100% and drops by 1% for each day without a claim
-MAX_NOCLAIM is the lowest rate that can be achieved
-"""
 INSURANCE_RATE = 0.0025
 MAX_NOCLAIM = 90
 

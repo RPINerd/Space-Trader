@@ -6,7 +6,7 @@
 
 import random
 
-from .constants import INTEREST_RATE, MAX_NOCLAIM, MAXSKILL, MERCENARYNAMES, CombatReputation, CriminalRecord, Skills
+from .constants import MAX_NOCLAIM, MAXSKILL, MERCENARYNAMES, CombatReputation, CriminalRecord, Skills
 from .economy import SHIPS, Ship
 
 
@@ -62,20 +62,27 @@ class Commander:
         return CriminalRecord.get_record_string(self.policeRecord)
 
     def pay_interest(self) -> None:
-        """Calculates the interest on current debt and pays it"""
+        """
+        Calculates the interest on current debt and pays it
+
+        Source code uses integer truncation rather than floating point math, so we do the same to keep functionality faithful
+        """
         debt_interest = 0
         if self.debt > 0:
-            debt_interest = max(1, self.debt * INTEREST_RATE)
+            debt_interest = max(1, self.debt // 10)
             if self.credits > debt_interest:
                 self.credits -= debt_interest
             else:
                 self.debt += debt_interest - self.credits
                 self.credits = 0
-        self.debt *= 1.1
 
     def pay_insurance(self) -> None:
         """
         Calculates the per-jump insurance payment on the ship and pays it
+
+        Insurance rate is the percentage of the ship's value that is paid as insurance daily.
+        This rate begins at 100% and drops by 1% for each day without a claim
+        MAX_NOCLAIM is the lowest rate that can be achieved
 
         Source code uses integer truncation rather than floating point math, so we do the same to keep functionality faithful
         """
