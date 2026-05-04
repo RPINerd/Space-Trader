@@ -393,11 +393,63 @@ class ShipInfo(Screen):
     def __init__(self, parent, screen_title, manager) -> None:
         super().__init__(parent, screen_title, manager)
 
+    def create_widgets(self):
+
+        # Bottom of the screen has context buttons to switch to commander status, questlog, and special cargo
+        self.context_buttons_frame = ttk.Frame(self)
+        self.commander_status_button = ttk.Button(
+            self.context_buttons_frame,
+            text="Status",
+            command=lambda: self.manager.go_to_screen("C"),
+        )
+        self.quest_button = ttk.Button(
+            self.context_buttons_frame,
+            text="Quests",
+            command=lambda: self.manager.go_to_screen("L"),
+        )
+        self.special_cargo_button = ttk.Button(
+            self.context_buttons_frame,
+            text="Special Cargo",
+            command=lambda: self.manager.go_to_screen("U"),
+        )
+
+        self.commander_status_button.pack(side="left")
+        self.quest_button.pack(side="left")
+        self.special_cargo_button.pack(side="left")
+
+        self.context_buttons_frame.pack(side="bottom", expand=True)
+
 
 class SpecialCargo(Screen):
 
     def __init__(self, parent, screen_title, manager) -> None:
         super().__init__(parent, screen_title, manager)
+
+    def create_widgets(self):
+
+        # Bottom of the screen has context buttons to switch to commander status, ship info, and questlog
+        self.context_buttons_frame = ttk.Frame(self)
+        self.commander_status_button = ttk.Button(
+            self.context_buttons_frame,
+            text="Status",
+            command=lambda: self.manager.go_to_screen("C"),
+        )
+        self.ship_info_button = ttk.Button(
+            self.context_buttons_frame,
+            text="Ship",
+            command=lambda: self.manager.go_to_screen("A"),
+        )
+        self.quest_button = ttk.Button(
+            self.context_buttons_frame,
+            text="Quests",
+            command=lambda: self.manager.go_to_screen("L"),
+        )
+
+        self.commander_status_button.pack(side="left")
+        self.ship_info_button.pack(side="left")
+        self.quest_button.pack(side="left")
+
+        self.context_buttons_frame.pack(side="bottom", expand=True)
 
 
 class Personnel(Screen):
@@ -410,3 +462,37 @@ class Quests(Screen):
 
     def __init__(self, parent, screen_title, manager) -> None:
         super().__init__(parent, screen_title, manager)
+
+    def create_widgets(self):
+
+        # commander_info = actions.get_commander_info()
+        # quests = commander_info["quests"]
+        # if not quests:
+        quests = ["There are no open quests."]
+
+        for _, quest in enumerate(quests):
+            ttk.Label(self, text=quest).pack()
+
+        # Bottom of the screen has context buttons to switch to commander status, ship info, and special cargo
+        self.context_buttons_frame = ttk.Frame(self)
+        self.commander_status_button = ttk.Button(
+            self.context_buttons_frame,
+            text="Status",
+            command=lambda: self.manager.go_to_screen("C"),
+        )
+        self.ship_info_button = ttk.Button(
+            self.context_buttons_frame,
+            text="Ship",
+            command=lambda: self.manager.go_to_screen("A"),
+        )
+        self.special_cargo_button = ttk.Button(
+            self.context_buttons_frame,
+            text="Special Cargo",
+            command=lambda: self.manager.go_to_screen("U"),
+        )
+
+        self.commander_status_button.pack(side="left")
+        self.ship_info_button.pack(side="left")
+        self.special_cargo_button.pack(side="left")
+
+        self.context_buttons_frame.pack(side="bottom", expand=True)
