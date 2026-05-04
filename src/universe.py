@@ -6,7 +6,7 @@
 """
 
 import logging
-from math import floor, pow, sqrt
+from math import sqrt
 from random import choice, randint
 
 from .constants import (
@@ -664,8 +664,16 @@ class Planet:  # noqa: PLR0904 (too many public methods)
         #     self.get_distance() <= comm.ship.fuel or Functions.wormhole_exists(comm.current_system, self)
         # )
 
-    def get_distance(self, target_planet=None):
-        return int(floor(sqrt(pow(self.x - target_planet.x, 2) + pow(self.y - target_planet.y, 2))))
+    def get_distance(self, target_planet: "Planet") -> int:
+        """
+        Return the distance to another planet, rounded to the nearest integer.
+
+        Mirrors C source RealDistance() in Math.c, which uses a nearest-integer
+        integer sqrt — not floor. For display and travel-range calculations only;
+        use squared distance for placement comparisons.
+        """
+        sq = (self.x - target_planet.x) ** 2 + (self.y - target_planet.y) ** 2
+        return round(sqrt(sq))
 
     # Political Interfaces
     # TODO maybe change to alter_ and handle political shift logic here
@@ -1103,12 +1111,16 @@ def planet_distance(planet: tuple[int, int], x2: int, y2: int) -> float:
     Returns:
         float: distance between the planet and the point
     """
-    return distance(planet[0], planet[1], x2, y2)
+    return square_distance(planet[0], planet[1], x2, y2)
 
 
-def distance(x1: int, y1: int, x2: int, y2: int) -> float:
+def square_distance(x1: int, y1: int, x2: int, y2: int) -> int:
     """
-    Calculate the distance between two points.
+    Calculate the squared distance between two points.
+
+    Use squared distance to mirror C source exactly, avoid floating-point boundary issues:
+        SqrDistance(j, i) <= SQR(MINDISTANCE + 1)  →  sq <= 49
+        SqrDistance(j, i) <  SQR(CLOSEDISTANCE)    →  sq < 169
 
     Args:
         x1 (int): x coordinate of point 1
@@ -1117,9 +1129,9 @@ def distance(x1: int, y1: int, x2: int, y2: int) -> float:
         y2 (int): y coordinate of point 2
 
     Returns:
-        float: distance between the two points
+        int: squared distance between the two points
     """
-    return ((x2 - x1) ** 2 + (y2 - y1) ** 2) ** 0.5
+    return ((x2 - x1) ** 2 + (y2 - y1) ** 2)
 
 
 def wormhole_exists(wormholes: list[int], a: int, b: int) -> bool:
