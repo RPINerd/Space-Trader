@@ -15,6 +15,8 @@ from .constants import (
     MAX_WORMHOLES,
     MIN_DISTANCE,
     SECTOR_DIAMETER,
+    SOCIETAL_PRESSURE_PREVALENCE,
+    SPECIAL_RESOURCE_PREVALENCE,
     Activity,
     Size,
     SocietalPressure,
@@ -1039,30 +1041,31 @@ class Universe:
             x = int(((GALAXYWIDTH * (1 + 2 * (id % 3))) / 6) - randint(-SECTOR_DIAMETER + 1, SECTOR_DIAMETER))
             y = int(((GALAXYHEIGHT * (1 if id < 3 else 3)) / 4) - randint(-SECTOR_DIAMETER + 1, SECTOR_DIAMETER))
             self.wormholes[id] = id
+            return (x, y)
 
-        else:
-            valid = False
-            while not valid:
-                x = randint(1, GALAXYWIDTH)
-                y = randint(1, GALAXYHEIGHT)
+        valid = False
+        while not valid:
+            x = randint(1, GALAXYWIDTH)
+            y = randint(1, GALAXYHEIGHT)
 
-                close_found = False
-                too_close = False
-                j = 0
-                while j < id and not too_close:
+            close_found = False
+            too_close = False
+            j = 0
+            while j < id and not too_close:
 
-                    system_distance = planet_distance(self.planets[j].get_location(), x, y)
-                    # Minimum distance between any two systems not to be accepted.
-                    if system_distance < MIN_DISTANCE:
-                        too_close = True
+                system_distance = planet_distance(self.planets[j].get_location(), x, y)
 
-                    # There should be at least one system which is close enough.
-                    if system_distance < SECTOR_DIAMETER:
-                        close_found = True
+                # Minimum distance between any two systems not to be accepted.
+                if system_distance <= MIN_DISTANCE**2:
+                    too_close = True
 
-                    j += 1
+                # There should be at least one system which is close enough.
+                if system_distance < SECTOR_DIAMETER**2:
+                    close_found = True
 
-                valid = close_found and not too_close
+                j += 1
+
+            valid = close_found and not too_close
 
         return (x, y)
 

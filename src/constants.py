@@ -182,6 +182,9 @@ class Size:
         return cls.NAMES[size]
 
 
+SPECIAL_RESOURCE_PREVALENCE = 40
+
+
 class SpecialResource:
 
     """Enum-esque class to associate an int with a special resource"""
@@ -232,6 +235,9 @@ class SpecialResource:
     def random() -> int:
         """Gives the index value of a random special resource"""
         return randint(1, 12)
+
+
+SOCIETAL_PRESSURE_PREVALENCE = 15
 
 
 class SocietalPressure:
