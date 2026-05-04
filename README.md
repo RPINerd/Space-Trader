@@ -1,6 +1,6 @@
 # Space Trader
 
-[![license](https://badgen.net/github/license/RPINerd/Space-Trader)](https://github.com/RPINerd/Space-Trader/blob/main/LICENSE)
+[![license](https://badgen.net/github/license/RPINerd/Space-Trader)](https://github.com/RPINerd/Space-Trader/blob/main/docs/LICENSE)
 ![commits](https://badgen.net/github/commits/RPINerd/Space-Trader?color=purple&icon=github)
 ![forks](https://badgen.net/github/forks/RPINerd/Space-Trader?color=green&icon=git)
 ![commits](https://badgen.net/github/last-commit/RPINerd/Space-Trader?color=cyan&icon=codebeat)

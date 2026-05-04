@@ -647,7 +647,6 @@ class Planet:  # noqa: PLR0904 (too many public methods)
         """"""
         self.tech_level = value
 
-    # TODO implement
     def dest_is_ok(self) -> bool:
         """
         Check if the destination is reachable with the current fuel level
@@ -668,13 +667,16 @@ class Planet:  # noqa: PLR0904 (too many public methods)
 
     # Political Interfaces
     # TODO maybe change to alter_ and handle political shift logic here
-    def set_govt_type(self, value) -> None:
+    def set_govt_type(self, value: PoliticalSystem) -> None:
+        """"""
         self.government = value
 
     def get_govt_type(self) -> PoliticalSystem:
+        """"""
         return self.government
 
     def get_government_name(self) -> str:
+        """"""
         return str(self.government)
 
     # Economic Interfaces
@@ -694,6 +696,7 @@ class Planet:  # noqa: PLR0904 (too many public methods)
         return self.soci_pressure
 
     def set_pressure(self, value: int) -> None:
+        """"""
         self.soci_pressure = value
 
     def get_special_resource(self) -> int:
@@ -720,10 +723,8 @@ class Planet:  # noqa: PLR0904 (too many public methods)
         self.special_resource = SpecialResource.random()
         return self.special_resource
 
-    def initialize_trade_items(self):
-        """
-        Set the starting quantity of each trade good for the planet
-        """
+    def initialize_trade_items(self) -> None:
+        """Set the starting quantity of each trade good for the planet"""
         for item_id in Ware.enum():
 
             # Make sure the item is allowed to be traded
@@ -748,7 +749,7 @@ class Planet:  # noqa: PLR0904 (too many public methods)
             if self.special_resource == TRADEITEMS[item_id].special_resource_hike:
                 self.trade_items[item_id] = self.trade_items[item_id] * 3 / 4
             if self.soci_pressure == TRADEITEMS[item_id].pressure:
-                self.trade_items[item_id] = self.trade_items[item_id] / 5
+                self.trade_items[item_id] /= 5
 
             # Another small random factor
             self.trade_items[item_id] = self.trade_items[item_id] - randint(1, 10) + randint(1, 10)
@@ -786,7 +787,7 @@ class Planet:  # noqa: PLR0904 (too many public methods)
         #     and self.tech_level.cast_to_int() >= item.tech_usage.cast_to_int()
         # )
 
-    def get_inventory(self):
+    def get_inventory(self) -> list[int]:
         """"""
         return self.trade_items
 
@@ -974,13 +975,22 @@ class Universe:
 
     """Responsible for managing the game world, including planet locations and attributes."""
 
-    def __init__(self) -> None:
-        """"""
+    def __init__(self, shuffle: bool = True) -> None:
+        """
+        Generate the universe for the game, including planet attributes and locations.
+
+        The C source does re-suffle without re-checking minimum distances, so post-shuffle positions are not
+            guaranteed to satisfy the placement invariant.
+
+        Args:
+            shuffle (bool): When True (default), randomise planet name-to-position assignments after placement.
+        """
         self.planets: dict[int, Planet] = {}
-        self.wormholes: list = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        self.wormholes: list = [0] * MAX_WORMHOLES
         logger.info("Generating Universe...")
         self.generate_planets()
-        self.extra_planet_shuffle()
+        if shuffle:
+            self.extra_planet_shuffle()
 
     def generate_planets(self) -> None:
         """Generate the planets for the game world."""
@@ -990,17 +1000,16 @@ class Universe:
             planet_govt = choice(GOVERNMENTS)
 
             # TODO can transition this to a choice of valid_tech_levels
-            # print(planet_govt.minTech, planet_govt.maxTech)
             tech_level = randint(planet_govt.minTech, planet_govt.maxTech)
 
             # As per the original code, ~15% of planets have no societal pressure
-            if randint(1, 100) >= 15:
+            if randint(1, 100) <= SOCIETAL_PRESSURE_PREVALENCE:
                 soci_pressure = SocietalPressure.NONE
             else:
                 soci_pressure = randint(1, 7)
 
             # As per the original code, ~40% of planets have no special resource
-            if randint(1, 5) < 3:
+            if randint(1, 100) <= SPECIAL_RESOURCE_PREVALENCE:
                 special_resource = SpecialResource.NOTHING
             else:
                 special_resource = randint(1, 12)
