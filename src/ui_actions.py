@@ -15,9 +15,8 @@ import src.economy as e
 logger = logging.getLogger(__name__)
 
 
-# Disordered list of user interactions
 def get_system_info() -> tuple[list[str], str]:
-    """"""
+    """Pulls the current system information and pressure to be displayed on the system info screen"""
     current_planet = c.GAME["universe"].planets[c.GAME["commander"].currentSystem]
 
     sys_info = current_planet.system_info()
@@ -30,9 +29,7 @@ def get_system_info() -> tuple[list[str], str]:
 
 
 def get_commander_info() -> dict:
-    """
-    Returns a dictionary of the commander's information
-    """
+    """Returns a dictionary of the commander's information"""
     commander = c.GAME["commander"]
     return {
         "name": commander.name,
@@ -55,7 +52,7 @@ def buy_fuel():
     pass
 
 
-def buy_news():
+def buy_news() -> None:
     logger.debug("Buying news!")
 
 
