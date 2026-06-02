@@ -43,7 +43,7 @@ keywords = [
 [project.optional-dependencies]
 test = [
     "pytest>=9.0.3",
-    "ruff>=0.0.241",
+    "ruff>=0.15.15",
 ]
 [project.urls]
 Homepage = "https://github.com/RPINerd/Space-Trader"
