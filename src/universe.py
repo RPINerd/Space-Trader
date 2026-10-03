@@ -528,7 +528,7 @@ TRADEITEMS = {
 }
 
 
-class Planet:  # noqa: PLR0904 (too many public methods)
+class Planet:  # ruff: ignore[too-many-public-methods] (too many public methods)
 
     """
     Object representing a single planet in the game world.
@@ -1010,7 +1010,7 @@ class Universe:
             planet_govt = choice(GOVERNMENTS)
 
             # TODO can transition this to a choice of valid_tech_levels
-            tech_level = randint(planet_govt.minTech, planet_govt.maxTech)
+            tech_level = randint(planet_govt.min_tech, planet_govt.max_tech)
 
             # As per the original code, ~15% of planets have no societal pressure
             if randint(1, 100) <= SOCIETAL_PRESSURE_PREVALENCE:

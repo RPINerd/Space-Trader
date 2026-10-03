@@ -18,12 +18,12 @@ class PoliticalSystem:
         law (int): The law enforcement level of the political system.
         crime (int): The crime rate in the political system.
         economy (int): The economic strength of the political system.
-        minTech (int): The minimum technology level required.
-        maxTech (int): The maximum technology level supported.
+        min_tech (int): The minimum technology level required.
+        max_tech (int): The maximum technology level supported.
         bribe_difficulty (int): The difficulty level of bribing officials.
         drug_tolerance (bool): Whether drugs are tolerated in this system.
         firearm_tolerance (bool): Whether firearms are tolerated in this system.
-        tradeItemId (int): The ID of the trade item associated with this system.
+        trade_item_id (int): The ID of the trade item associated with this system.
     """
 
     ANARCHY = 0
@@ -51,12 +51,12 @@ class PoliticalSystem:
         law: int,
         crime: int,
         economy: int,
-        minTech: int,
-        maxTech: int,
+        min_tech: int,
+        max_tech: int,
         bribe_difficulty: int,
         drug_tolerance: bool,
         firearm_tolerance: bool,
-        tradeItemId: int,
+        trade_item_id: int,
     ):
         """Initializes a PoliticalSystem instance"""
         self.name = name
@@ -64,12 +64,12 @@ class PoliticalSystem:
         self.law = law
         self.crime = crime
         self.economy = economy
-        self.minTech = minTech
-        self.maxTech = maxTech
+        self.min_tech = min_tech
+        self.max_tech = max_tech
         self.bribe_difficulty = bribe_difficulty
         self.drug_tolerance = drug_tolerance
         self.firearm_tolerance = firearm_tolerance
-        self.tradeItemId = tradeItemId
+        self.trade_item_id = trade_item_id
 
     def __str__(self) -> str:
         """Returns the string representation of the political system"""
@@ -190,7 +190,7 @@ class Equipment:
     SHIELD = 1
     GADGET = 2
 
-    def __init__(self, name, price, tech_level):
+    def __init__(self, name: str, price: int, tech_level: int) -> None:
         """Initializes an Equipment instance"""
         self.name = name
         self.price = price
@@ -254,7 +254,7 @@ class Gadget(Equipment):
     FUELCOMPACTOR = 5
     SMUGGLERHOLD = 6
 
-    def __init__(self, name, skill, price, tech_level, unknown):
+    def __init__(self, name: str, skill, price: int, tech_level: int, unknown: int) -> None:
         """Initialize a Gadget instance"""
         super().__init__(name, price, tech_level)
         self.skill = skill
@@ -284,6 +284,7 @@ class Ship:
 
     @staticmethod
     def enum() -> list[int]:
+        """Returns a list of index numbers for all possible values"""
         return range(17)
 
     @staticmethod
@@ -344,7 +345,7 @@ class Ship:
         pirate_use: int,
         trader_use: int,
         tech_level: int,
-    ):
+    ) -> None:
         self.name = name
         self.size = size
         self.cargo = cargo
@@ -353,6 +354,7 @@ class Ship:
         self.gadget_slots = gadget_slots
         self.crew = crew
         self.fuel = fuel
+        self.tank_capacity = fuel
         self.fuel_cost = fuel_cost
         self.hull = hull
         self.repair_cost = repair_cost

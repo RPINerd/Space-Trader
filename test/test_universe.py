@@ -1,5 +1,6 @@
 """"""
 
+
 import src.constants as c
 from src.economy import PoliticalSystem
 from src.universe import GOVERNMENTS, PLANET_NAMES, Planet, Universe
@@ -36,7 +37,7 @@ def test_planetproperties() -> None:
         assert testverse.planets[i].size in range(6)
         assert testverse.planets[i].get_govt_type() in GOVERNMENTS.values()
         assert testverse.planets[i].tech_level in range(
-            testverse.planets[i].government.minTech, testverse.planets[i].government.maxTech + 1
+            testverse.planets[i].government.min_tech, testverse.planets[i].government.max_tech + 1
         )
         assert testverse.planets[i].soci_pressure in range(8)
         assert testverse.planets[i].special_resource in range(13)

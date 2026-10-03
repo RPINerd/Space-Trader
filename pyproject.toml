@@ -43,7 +43,7 @@ keywords = [
 [project.optional-dependencies]
 test = [
     "pytest>=9.1.1",
-    "ruff>=0.16.0",
+    "ruff>=0.16.9",
 ]
 [project.urls]
 Homepage = "https://github.com/RPINerd/Space-Trader"
@@ -51,5 +51,9 @@ Issues = "https://github.com/RPINerd/Space-Trader/issues"
 
 [tool.ruff.lint]
 extend-ignore = [
-    "ERA001",  # Commented out code
+    "commented-out-code",
 ]
+
+[tool.ruff.lint.pylint]
+max-args = 10
+max-statements = 80
