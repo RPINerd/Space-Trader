@@ -1,5 +1,7 @@
 # Space Trader
 
+This document has been ported to a GitHub style wiki! Browse it at the [SpaceTrader wiki](https://github.com/RPINerd/Space-Trader/wiki)
+
 ## Table of Contents
 
 - [Space Trader](#space-trader)

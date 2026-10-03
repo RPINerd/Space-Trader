@@ -4,10 +4,13 @@
     Defines the various screens that make up the game, such as the system info screen, shipyard, etc.
 """
 
+import tkinter as tk
 from random import randint
 from tkinter import ttk
 
+import src.constants as c
 import src.ui_actions as actions
+from src.constants import Size, TechLevel
 
 from .screens import Screen
 
@@ -67,8 +70,99 @@ class ShortRange(Screen):
 
 class LongRange(Screen):
 
+    """Also known as the Galactic chart"""
+
     def __init__(self, parent, screen_title, manager) -> None:
         super().__init__(parent, screen_title, manager)
+
+    def create_widgets(self) -> None:
+        commander = c.GAME["commander"]
+        self.universe = c.GAME["universe"]
+        self.current_planet = self.universe.planets[commander.currentSystem]
+        self.selected_planet = self.current_planet
+
+        self.map_canvas = tk.Canvas(
+            self,
+            bg=c.BKG_HEX,
+            width=c.GALAXYWIDTH * c.SCALAR,
+            height=c.GALAXYHEIGHT * c.SCALAR,
+            highlightthickness=0,
+        )
+        self.map_canvas.pack(side="top", padx=3 * c.SCALAR)
+        self.map_canvas.bind("<Button-1>", self._on_map_click)
+
+        self.info_frame = ttk.Frame(self)
+        self.info_frame.columnconfigure(0, weight=1)
+        self.info_frame.columnconfigure(1, weight=1)
+        self.info_frame.columnconfigure(2, weight=1)
+        self.name_label = ttk.Label(self.info_frame, anchor="w")
+        self.distance_label = ttk.Label(self.info_frame, anchor="center")
+        self.find_button = ttk.Button(self.info_frame, text="Find", width=6)
+        self.description_label = ttk.Label(self.info_frame, anchor="w")
+        self.name_label.grid(row=0, column=0, sticky="ew")
+        self.distance_label.grid(row=0, column=1, sticky="ew")
+        self.find_button.grid(row=0, column=2, sticky="e")
+        self.description_label.grid(row=1, column=0, columnspan=3, sticky="ew")
+        self.info_frame.pack(fill="x", padx=2 * c.SCALAR)
+
+        self._redraw_chart()
+
+    def _redraw_chart(self) -> None:
+        """Redraw planets, current fuel range, and selected-system details."""
+        commander = c.GAME["commander"]
+        self.current_planet = self.universe.planets[commander.currentSystem]
+        self.map_canvas.delete("all")
+        for planet in self.universe.planets.values():
+            x, y = planet.x * c.SCALAR, planet.y * c.SCALAR
+            self.map_canvas.create_rectangle(
+                x - c.SCALAR,
+                y - c.SCALAR,
+                x + c.SCALAR,
+                y + c.SCALAR,
+                fill=c.FRG_HEX,
+                outline=c.FRG_HEX,
+            )
+
+        center_x = self.current_planet.x * c.SCALAR
+        center_y = self.current_planet.y * c.SCALAR
+        radius = commander.ship.fuel * c.SCALAR
+        self.map_canvas.create_oval(
+            center_x - radius,
+            center_y - radius,
+            center_x + radius,
+            center_y + radius,
+            outline=c.FRG_HEX,
+        )
+
+        selected_x = self.selected_planet.x * c.SCALAR
+        selected_y = self.selected_planet.y * c.SCALAR
+        arm = 4 * c.SCALAR
+        self.map_canvas.create_line(
+            selected_x - arm, selected_y, selected_x + arm, selected_y, fill=c.FRG_HEX
+        )
+        self.map_canvas.create_line(
+            selected_x, selected_y - arm, selected_x, selected_y + arm, fill=c.FRG_HEX
+        )
+
+        distance = self.current_planet.get_distance(self.selected_planet)
+        self.name_label.configure(text=self.selected_planet.name)
+        self.distance_label.configure(text=f"{distance} parsecs")
+        self.description_label.configure(
+            text=(
+                f"{Size.name(self.selected_planet.size)} "
+                f"{TechLevel.name(self.selected_planet.tech_level)} "
+                f"{self.selected_planet.get_government_name()} State"
+            )
+        )
+
+    def _on_map_click(self, event: tk.Event) -> None:
+        """Select the planet nearest the clicked map position."""
+        self.selected_planet = min(
+            self.universe.planets.values(),
+            key=lambda planet: (planet.x - event.x / c.SCALAR) ** 2
+            + (planet.y - event.y / c.SCALAR) ** 2,
+        )
+        self._redraw_chart()
 
 
 class TargetSystem(Screen):

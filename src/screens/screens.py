@@ -15,6 +15,8 @@ logger = logging.getLogger(__name__)
 
 class Heading(ttk.Frame):
 
+    """The universal heading bar that appears at the top of every screen"""
+
     def __init__(self, parent, heading: str):
         self.parent = parent
         super().__init__(parent)
@@ -31,7 +33,6 @@ class Heading(ttk.Frame):
             self,
             text="B",
             width=2,
-            # height=1,
             command=lambda: self.shortcut_trigger(self, "B"),
         )
         self.b.pack(side="right")
@@ -39,7 +40,6 @@ class Heading(ttk.Frame):
             self,
             text="S",
             width=2,
-            # height=1,
             command=lambda: self.shortcut_trigger(self, "S"),
         )
         self.s.pack(side="right")
@@ -47,7 +47,6 @@ class Heading(ttk.Frame):
             self,
             text="Y",
             width=2,
-            # height=1,
             command=lambda: self.shortcut_trigger(self, "Y"),
         )
         self.y.pack(side="right")
@@ -55,7 +54,6 @@ class Heading(ttk.Frame):
             self,
             text="W",
             width=2,
-            # height=1,
             command=lambda: self.shortcut_trigger(self, "W"),
         )
         self.w.pack(side="right")
@@ -73,6 +71,8 @@ class Heading(ttk.Frame):
 
 
 class Screen(ttk.Frame):
+
+    """Base class for all screens in the game"""
 
     def __init__(self, parent, screen_title: str, manager) -> None:
         self.manager = manager
@@ -98,11 +98,12 @@ class Screen(ttk.Frame):
 
         self.create_widgets()
 
-    def change_screen(self, event):
+    def change_screen(self, event: tk.Event) -> None:
+        """Change the current screen based on the key pressed"""
         logger.debug("Changing screen to %s", event.keysym)
         self.manager.go_to_screen(event.keysym.upper())
 
-    def create_widgets(self):
+    def create_widgets(self) -> None:
         # ! Placeholder id frame
         self.id_frame = ttk.Frame(self)
         ttk.Label(self.id_frame, text=self.screen_title, justify="center").pack(fill="x", expand=True)
@@ -112,7 +113,9 @@ class Screen(ttk.Frame):
 
 class Popup(ttk.Frame):
 
-    def __init__(self, parent, title, content: ttk.Frame, height: int = INTERNAL_RES * SCALAR):
+    """A popup window that appears over the current screen"""
+
+    def __init__(self, parent, title: str, content: ttk.Frame, height: int = INTERNAL_RES * SCALAR):
         super().__init__(parent, bg=BKG_HEX, height=height, width=INTERNAL_RES * SCALAR)
         self.pack(expand=True, fill="both")
         self.title = title
