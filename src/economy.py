@@ -57,7 +57,7 @@ class PoliticalSystem:
         drug_tolerance: bool,
         firearm_tolerance: bool,
         trade_item_id: int,
-    ):
+    ) -> None:
         """Initializes a PoliticalSystem instance"""
         self.name = name
         self.stability = stability
@@ -159,7 +159,7 @@ class Ware:
         min_prod: int,
         max_prod: int,
         quantity: int,
-    ):
+    ) -> None:
         """Initializes a Ware instance"""
         self.name = name
         self.tech_level_prod = tech_level_prod
@@ -254,7 +254,7 @@ class Gadget(Equipment):
     FUELCOMPACTOR = 5
     SMUGGLERHOLD = 6
 
-    def __init__(self, name: str, skill, price: int, tech_level: int, unknown: int) -> None:
+    def __init__(self, name: str, skill: int, price: int, tech_level: int, unknown: int) -> None:
         """Initialize a Gadget instance"""
         super().__init__(name, price, tech_level)
         self.skill = skill
@@ -263,7 +263,6 @@ class Gadget(Equipment):
 
 class Ship:
     """"""
-    # ESCAPEPOD = 0 #? Not in source
     FLEA = 0
     GNAT = 1
     FIREFLY = 2
@@ -326,7 +325,7 @@ class Ship:
             "Wasp",
         ]
 
-    def __init__(
+    def __init__(  # ruff:ignore[too-many-arguments, too-many-positional-arguments]
         self,
         name: str,
         size: int,
@@ -346,6 +345,7 @@ class Ship:
         trader_use: int,
         tech_level: int,
     ) -> None:
+        """"""
         self.name = name
         self.size = size
         self.cargo = cargo

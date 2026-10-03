@@ -50,10 +50,10 @@ Homepage = "https://github.com/RPINerd/Space-Trader"
 Issues = "https://github.com/RPINerd/Space-Trader/issues"
 
 [tool.ruff.lint]
-extend-ignore = [
+ignore = [
     "commented-out-code",
 ]
 
 [tool.ruff.lint.pylint]
-max-args = 10
+max-args = 15
 max-statements = 80

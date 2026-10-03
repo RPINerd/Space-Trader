@@ -48,7 +48,7 @@ class FontManager:
         Function taken from:
         https://stackoverflow.com/questions/11993290/truly-custom-font-in-tkinter/30631309#30631309
         """
-        from ctypes import byref, create_string_buffer, create_unicode_buffer, windll  # noqa
+        from ctypes import byref, create_string_buffer, create_unicode_buffer, windll  # ruff:ignore[import-outside-top-level]
 
         if isinstance(font_path, bytes):
             path_buffer = create_string_buffer(font_path)

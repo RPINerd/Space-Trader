@@ -4,15 +4,22 @@
     Defines the various screens that make up the game, such as the system info screen, shipyard, etc.
 """
 
+import logging
 import tkinter as tk
 from random import randint
 from tkinter import ttk
+from typing import TYPE_CHECKING
 
 import src.constants as c
 import src.ui_actions as actions
 from src.constants import Size, TechLevel
 
 from .screens import Screen
+
+if TYPE_CHECKING:
+    from src.screens.screen_manager import ScreenManager  # ruff:ignore[runtime-import-in-type-checking-block]
+
+logger = logging.getLogger(__name__)
 
 FUEL_STATUS = "You have fuel to fly {0} parsecs."
 FULL_TANK = "Your tank cannot hold more fuel."
@@ -26,11 +33,14 @@ NO_HIRE = "No one for hire"
 
 class SystemInfo(Screen):
 
-    def __init__(self, parent, screen_title, manager) -> None:
+    """The system info screen; appears immediately after warp to a new system"""
+
+    def __init__(self, parent: tk.Misc, screen_title: str, manager: ScreenManager) -> None:
+        """"""
         super().__init__(parent, screen_title, manager)
 
-    def create_widgets(self):
-
+    def create_widgets(self) -> None:
+        """"""
         system_info, pressure = actions.get_system_info()
 
         # Info Frame
@@ -57,14 +67,18 @@ class SystemInfo(Screen):
         ttk.Button(self.shortcut_frame, text="News", command=actions.buy_news).pack(side="left")
         self.shortcut_frame.pack(side="top", fill="both", expand=True)
 
-    def change_screen(self, event):
+    def change_screen(self, event) -> None:
+        """"""
         # TODO probably can be a super method
         pass
 
 
 class ShortRange(Screen):
 
-    def __init__(self, parent, screen_title, manager) -> None:
+    """Short Range Chart; where player selects nearby system to warp to"""
+
+    def __init__(self, parent: tk.Misc, screen_title: str, manager: ScreenManager) -> None:
+        """"""
         super().__init__(parent, screen_title, manager)
 
 
@@ -72,10 +86,12 @@ class LongRange(Screen):
 
     """Also known as the Galactic chart"""
 
-    def __init__(self, parent, screen_title, manager) -> None:
+    def __init__(self, parent: tk.Misc, screen_title: str, manager: ScreenManager) -> None:
+        """"""
         super().__init__(parent, screen_title, manager)
 
     def create_widgets(self) -> None:
+        """"""
         commander = c.GAME["commander"]
         self.universe = c.GAME["universe"]
         self.current_planet = self.universe.planets[commander.currentSystem]
@@ -167,22 +183,33 @@ class LongRange(Screen):
 
 class TargetSystem(Screen):
 
-    def __init__(self, parent, screen_title, manager) -> None:
+    """Display info known about the current targeted system"""
+
+    def __init__(self, parent: tk.Misc, screen_title: str, manager: ScreenManager) -> None:
+        """"""
         super().__init__(parent, screen_title, manager)
 
 
 class AvgPrices(Screen):
 
-    def __init__(self, parent, screen_title, manager) -> None:
+    """Display average prices of trade goods that are available in system"""
+
+    def __init__(self, parent: tk.Misc, screen_title: str, manager: ScreenManager) -> None:
+        """"""
+        logger.debug("Initializing AvgPrices screen, the parent class is %s", type(parent))
         super().__init__(parent, screen_title, manager)
 
 
 class BuyCargo(Screen):
 
-    def __init__(self, parent, screen_title, manager) -> None:
+    """Interface for buying trade goods"""
+
+    def __init__(self, parent: tk.Misc, screen_title: str, manager: ScreenManager) -> None:
+        """"""
         super().__init__(parent, screen_title, manager)
 
     def create_widgets(self) -> None:
+        """"""
         self.table_frame = ttk.Frame(self)
         for i, value in enumerate(actions.get_ware_list()):
             ttk.Button(self.table_frame, text=randint(0, 42)).grid(row=i, column=0)
@@ -202,10 +229,14 @@ class BuyCargo(Screen):
 
 class SellCargo(Screen):
 
-    def __init__(self, parent, screen_title, manager) -> None:
+    """Interface for selling trade goods"""
+
+    def __init__(self, parent: tk.Misc, screen_title: str, manager: ScreenManager) -> None:
+        """"""
         super().__init__(parent, screen_title, manager)
 
     def create_widgets(self) -> None:
+        """"""
         self.table_frame = ttk.Frame(self)
         for i, value in enumerate(actions.get_ware_list()):
             ttk.Button(self.table_frame, text="0").grid(row=i, column=0)
@@ -225,16 +256,20 @@ class SellCargo(Screen):
 
 class BuyEquipment(Screen):
 
-    def __init__(self, parent, screen_title, manager) -> None:
+    """Shop interface for buying things like weapons and shields"""
+
+    def __init__(self, parent: tk.Misc, screen_title: str, manager: ScreenManager) -> None:
+        """"""
         super().__init__(parent, screen_title, manager)
 
     def create_widgets(self) -> None:
+        """"""
         self.table_frame = ttk.Frame(self)
 
         sold_equipment = actions.get_equip_sold()
         for i, value in enumerate(sold_equipment):
 
-            sold = value[0] == ""
+            sold = not value[0]
             # First column are Buy buttons for each equipment
             if sold:
                 ttk.Button(self.table_frame, text="Buy", command=actions.buy_equipment).grid(row=i, column=0)
@@ -259,17 +294,23 @@ class BuyEquipment(Screen):
 
 class SellEquipment(Screen):
 
-    def __init__(self, parent, screen_title, manager) -> None:
+    """Shop interface for selling things like weapons and shields"""
+
+    def __init__(self, parent: tk.Misc, screen_title: str, manager: ScreenManager) -> None:
+        """"""
         super().__init__(parent, screen_title, manager)
 
 
 class Bank(Screen):
 
-    def __init__(self, parent, screen_title, manager) -> None:
+    """Bank interface for managing loans and insurance"""
+
+    def __init__(self, parent: tk.Misc, screen_title: str, manager: ScreenManager) -> None:
+        """"""
         super().__init__(parent, screen_title, manager)
 
-    def create_widgets(self):
-
+    def create_widgets(self) -> None:
+        """"""
         # Loan Frame
         self.loan_frame = ttk.Frame(self)
         ttk.Label(self.loan_frame, text="Loan").pack()
@@ -307,11 +348,14 @@ class Bank(Screen):
 
 class Shipyard(Screen):
 
-    def __init__(self, parent, screen_title, manager) -> None:
+    """Hopefully self explanatory"""
+
+    def __init__(self, parent: tk.Misc, screen_title: str, manager: ScreenManager) -> None:
+        """"""
         super().__init__(parent, screen_title, manager)
 
-    def create_widgets(self):
-
+    def create_widgets(self) -> None:
+        """"""
         # Fuel Frame
         self.fuel_frame = ttk.Frame(self)
         ttk.Label(self.fuel_frame, text=FUEL_STATUS.format(0), font=("Palm Pilot Small", 14)).pack()
@@ -339,17 +383,23 @@ class Shipyard(Screen):
 
 class BuyShip(Screen):
 
-    def __init__(self, parent, screen_title, manager) -> None:
+    """Specific sub-menu for purchasing a new ship"""
+
+    def __init__(self, parent: tk.Misc, screen_title: str, manager: ScreenManager) -> None:
+        """"""
         super().__init__(parent, screen_title, manager)
 
 
 class CommanderInfo(Screen):
 
-    def __init__(self, parent, screen_title, manager) -> None:
+    """View the current commanders stats/skills/etc"""
+
+    def __init__(self, parent: tk.Misc, screen_title: str, manager: ScreenManager) -> None:
+        """"""
         super().__init__(parent, screen_title, manager)
 
-    def create_widgets(self):
-
+    def create_widgets(self) -> None:
+        """"""
         # Pull the data for the current commander's info
         commander_info = actions.get_commander_info()
 
@@ -484,11 +534,14 @@ class CommanderInfo(Screen):
 
 class ShipInfo(Screen):
 
-    def __init__(self, parent, screen_title, manager) -> None:
+    """View the current ship's stats and equipment"""
+
+    def __init__(self, parent: tk.Misc, screen_title: str, manager: ScreenManager) -> None:
+        """"""
         super().__init__(parent, screen_title, manager)
 
-    def create_widgets(self):
-
+    def create_widgets(self) -> None:
+        """"""
         # Bottom of the screen has context buttons to switch to commander status, questlog, and special cargo
         self.context_buttons_frame = ttk.Frame(self)
         self.commander_status_button = ttk.Button(
@@ -516,11 +569,14 @@ class ShipInfo(Screen):
 
 class SpecialCargo(Screen):
 
-    def __init__(self, parent, screen_title, manager) -> None:
+    """View special cargo items (i.e. quest items)"""
+
+    def __init__(self, parent: tk.Misc, screen_title: str, manager: ScreenManager) -> None:
+        """"""
         super().__init__(parent, screen_title, manager)
 
-    def create_widgets(self):
-
+    def create_widgets(self) -> None:
+        """"""
         # Bottom of the screen has context buttons to switch to commander status, ship info, and questlog
         self.context_buttons_frame = ttk.Frame(self)
         self.commander_status_button = ttk.Button(
@@ -548,17 +604,23 @@ class SpecialCargo(Screen):
 
 class Personnel(Screen):
 
-    def __init__(self, parent, screen_title, manager) -> None:
+    """View any hired crew and their stats"""
+
+    def __init__(self, parent: tk.Misc, screen_title: str, manager: ScreenManager) -> None:
+        """"""
         super().__init__(parent, screen_title, manager)
 
 
 class Quests(Screen):
 
-    def __init__(self, parent, screen_title, manager) -> None:
+    """View any active quests"""
+
+    def __init__(self, parent: tk.Misc, screen_title: str, manager: ScreenManager) -> None:
+        """"""
         super().__init__(parent, screen_title, manager)
 
-    def create_widgets(self):
-
+    def create_widgets(self) -> None:
+        """"""
         # commander_info = actions.get_commander_info()
         # quests = commander_info["quests"]
         # if not quests:

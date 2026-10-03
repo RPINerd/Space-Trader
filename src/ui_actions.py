@@ -54,6 +54,12 @@ def buy_fuel() -> None:
     logger.debug("Buying fuel!")
     current_ship: e.Ship = c.GAME["commander"].ship
     full_tank = current_ship.fuel_cost * (current_ship.tank_capacity - current_ship.fuel)
+    if full_tank > c.GAME["commander"].credits:
+        logger.warning("Not enough credits to buy fuel!")
+        return
+    current_ship.fuel = current_ship.tank_capacity
+    c.GAME["commander"].credits -= full_tank
+    logger.info("Fuel bought successfully!")
 
 
 def buy_news() -> None:
@@ -92,6 +98,7 @@ def get_debt() -> str:
 
 
 def get_max_loan() -> str:
+    """"""
     # TODO this is a placeholder, figure out how this is calculated in soruce
     return f"{c.GAME["commander"].get_net_worth()} cr."
 
@@ -114,7 +121,6 @@ def get_ware_list() -> list[str]:
 def get_bays() -> str:
     """"""
     # TODO placeholder value, not currently tracked
-    # return f"{c.GAME["commander"].ship.bays} bays"
     return "Bays: 3/25"
 
 

@@ -7,8 +7,12 @@
 import logging
 import tkinter as tk
 from tkinter import ttk
+from typing import TYPE_CHECKING
 
 from src.constants import BKG_HEX, FRG_HEX, INTERNAL_RES, SCALAR
+
+if TYPE_CHECKING:
+    from src.screens.screen_manager import ScreenManager  # ruff:ignore[runtime-import-in-type-checking-block]
 
 logger = logging.getLogger(__name__)
 
@@ -17,15 +21,16 @@ class Heading(ttk.Frame):
 
     """The universal heading bar that appears at the top of every screen"""
 
-    def __init__(self, parent, heading: str):
+    def __init__(self, parent: tk.Misc, heading: str) -> None:
+        """"""
         self.parent = parent
         super().__init__(parent)
         self.heading = heading
         self.create_widgets()
         self.pack()
 
-    def create_widgets(self):
-
+    def create_widgets(self) -> None:
+        """Draw the heading bar with the title and shortcut buttons"""
         self.heading = ttk.Label(self, text=self.heading, style="Title.TLabel")
         self.heading.pack(side="left")
 
@@ -61,11 +66,8 @@ class Heading(ttk.Frame):
         self.underline = tk.Canvas(self, width=INTERNAL_RES * SCALAR, height=2, bg=FRG_HEX)
         self.underline.pack(side="bottom", expand=True, fill="x")
 
-    def shortcut_trigger(event, self, key):
-        # print(f"self type: {type(self)}\nself: {self}")
-        # print(f"event type: {type(event)}\nevent: {event}, key: {key}")
-        # for attrib in getattr(event, "__dict__", {}):
-        #     print(f"attrib: {attrib}")
+    def shortcut_trigger(self, event: tk.Event, key: str) -> None:
+        """Trigger shortcut action for navigation keys"""
         logger.debug("Shortcut triggered: %s", key)
         self.parent.manager.go_to_screen(key)
 
@@ -74,7 +76,8 @@ class Screen(ttk.Frame):
 
     """Base class for all screens in the game"""
 
-    def __init__(self, parent, screen_title: str, manager) -> None:
+    def __init__(self, parent: tk.Misc, screen_title: str, manager: ScreenManager) -> None:
+        """"""
         self.manager = manager
         self.screen_title = screen_title
         super().__init__(parent)
@@ -104,7 +107,7 @@ class Screen(ttk.Frame):
         self.manager.go_to_screen(event.keysym.upper())
 
     def create_widgets(self) -> None:
-        # ! Placeholder id frame
+        """Placeholder for screen widgets; override in subclasses"""
         self.id_frame = ttk.Frame(self)
         ttk.Label(self.id_frame, text=self.screen_title, justify="center").pack(fill="x", expand=True)
         ttk.Label(self.id_frame, text="Not Implemented", justify="center").pack(fill="x", expand=True)
@@ -115,14 +118,16 @@ class Popup(ttk.Frame):
 
     """A popup window that appears over the current screen"""
 
-    def __init__(self, parent, title: str, content: ttk.Frame, height: int = INTERNAL_RES * SCALAR):
+    def __init__(self, parent: tk.Misc, title: str, content: ttk.Frame, height: int = INTERNAL_RES * SCALAR) -> None:
+        """"""
         super().__init__(parent, bg=BKG_HEX, height=height, width=INTERNAL_RES * SCALAR)
         self.pack(expand=True, fill="both")
         self.title = title
         self.content = content
         self.create_widgets()
 
-    def create_widgets(self):
+    def create_widgets(self) -> None:
+        """"""
         self.title = ttk.Label(self, text=self.title)
         self.title.pack()
         self.message = ttk.Label(self, text=self.message)
