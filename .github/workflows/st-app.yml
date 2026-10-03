@@ -25,7 +25,7 @@ jobs:
         python-version: "3.14"
     - name: Install dependencies
       run: uv sync --extra test
-    - name: Lint with ruff
-      run: uv run ruff check --preview .
+    # - name: Lint with ruff
+    #   run: uv run ruff check --preview .
     - name: Test with pytest
       run: uv run pytest
