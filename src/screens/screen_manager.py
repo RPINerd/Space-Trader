@@ -113,7 +113,11 @@ class ScreenManager:
     def go_to_screen(self, key: str) -> None:
         """Use a key shortcut to switch to a different screen"""
         try:
-            self.screens[key].tkraise()
+            screen = self.screens[key]
+            screen.tkraise()
+            on_show = getattr(screen, "on_show", None)
+            if on_show is not None:
+                on_show()
         except KeyError:
             raise KeyError(f"Key {key} not found in screens")
         except AttributeError:
