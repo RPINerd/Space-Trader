@@ -207,3 +207,8 @@ def get_loan() -> None:
     """"""
     # TODO
     logger.debug("Getting a loan!")
+
+
+def get_quests() -> list[str]:
+    """"""
+    return ["There are no open quests."]

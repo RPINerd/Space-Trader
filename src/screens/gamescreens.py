@@ -68,11 +68,6 @@ class SystemInfo(Screen):
         ttk.Button(self.shortcut_frame, text="News", command=actions.buy_news).pack(side="left")
         self.shortcut_frame.pack(side="top", fill="both", expand=True)
 
-    def change_screen(self, event) -> None:
-        """"""
-        # TODO probably can be a super method
-        pass
-
 
 class ShortRange(Screen):
 
@@ -425,31 +420,25 @@ class BuyEquipment(Screen):
         super().__init__(parent, screen_title, manager)
 
     def create_widgets(self) -> None:
-        """"""
+        """Show equipment available at this system and its purchase price."""
         self.table_frame = ttk.Frame(self)
+        self.table_frame.columnconfigure(1, weight=1)
 
         sold_equipment = actions.get_equip_sold()
-        for i, value in enumerate(sold_equipment):
+        for row, value in enumerate(sold_equipment):
+            unavailable_marker, equipment_name, price = value
 
-            sold = not value[0]
-            # First column are Buy buttons for each equipment
-            if sold:
-                ttk.Button(self.table_frame, text="Buy", command=actions.buy_equipment).grid(row=i, column=0)
+            if not unavailable_marker:
+                ttk.Button(self.table_frame, text="Buy", command=actions.buy_equipment).grid(row=row, column=0)
             else:
-                ttk.Label(self.table_frame, text="   ").grid(
-                    row=i,
-                    column=0,
-                )
+                ttk.Label(self.table_frame, text="   ").grid(row=row, column=0)
 
-            # Second column is the equipment name
-            ttk.Label(self.table_frame, text=value[1]).grid(row=i, column=1, sticky="w")
-
-            # Third column is the cost for each equipment
-            ttk.Label(self.table_frame, text=value[2]).grid(row=i, column=2)
+            ttk.Label(self.table_frame, text=equipment_name).grid(row=row, column=1, sticky="w")
+            ttk.Label(self.table_frame, text=price.capitalize()).grid(row=row, column=2, sticky="e")
 
         self.table_frame.pack(fill="x", expand=True)
 
-        # Current credits
+        # Keep the price/status column at the right edge of the screen.
         self.credits_label = ttk.Label(self, text=actions.get_credits())
         self.credits_label.place(relx=1, rely=1, anchor="se")
 
@@ -461,6 +450,36 @@ class SellEquipment(Screen):
     def __init__(self, parent: tk.Misc, screen_title: str, manager: ScreenManager) -> None:
         """"""
         super().__init__(parent, screen_title, manager)
+
+    def create_widgets(self) -> None:
+        """Show the equipment the ship can sell, grouped by equipment type."""
+        self.table_frame = ttk.Frame(self)
+        self.table_frame.columnconfigure(0, weight=1)
+        for row, weight in enumerate((3, 0, 3, 0, 4)):
+            self.table_frame.rowconfigure(row, weight=weight)
+
+        weapon_frame = ttk.Frame(self.table_frame)
+        weapon_frame.columnconfigure(1, weight=1)
+        ttk.Button(weapon_frame, text="Sell", command=actions.sell_equipment).grid(row=0, column=0, sticky="w")
+        ttk.Label(weapon_frame, text="Pulse laser").grid(row=0, column=1, sticky="w", padx=5 * c.SCALAR)
+        ttk.Label(weapon_frame, text="1500 cr.").grid(row=0, column=2, sticky="e")
+        weapon_frame.grid(row=0, column=0, sticky="new")
+
+        tk.Frame(self.table_frame, background=c.FRG_HEX, height=2 * c.SCALAR).grid(
+            row=1, column=0, sticky="ew"
+        )
+
+        ttk.Label(self.table_frame, text="No shields").grid(row=2, column=0, sticky="w", padx=22 * c.SCALAR)
+
+        tk.Frame(self.table_frame, background=c.FRG_HEX, height=2 * c.SCALAR).grid(
+            row=3, column=0, sticky="ew"
+        )
+
+        ttk.Label(self.table_frame, text="No gadgets").grid(row=4, column=0, sticky="w", padx=22 * c.SCALAR)
+        self.table_frame.pack(fill="both", expand=True)
+
+        self.credits_label = ttk.Label(self, text=actions.get_credits())
+        self.credits_label.place(relx=1, rely=1, anchor="se")
 
 
 class Bank(Screen):
@@ -560,7 +579,7 @@ class CommanderInfo(Screen):
         """"""
         super().__init__(parent, screen_title, manager)
 
-    def create_widgets(self) -> None:
+    def create_widgets(self) -> None:  # ruff:ignore[too-many-statements]
         """"""
         # Pull the data for the current commander's info
         commander_info = actions.get_commander_info()
@@ -783,10 +802,7 @@ class Quests(Screen):
 
     def create_widgets(self) -> None:
         """"""
-        # commander_info = actions.get_commander_info()
-        # quests = commander_info["quests"]
-        # if not quests:
-        quests = ["There are no open quests."]
+        quests = actions.get_quests()
 
         for _, quest in enumerate(quests):
             ttk.Label(self, text=quest).pack()
