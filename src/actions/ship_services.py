@@ -28,8 +28,13 @@ def repair() -> None:
 
 
 def buy_pod() -> None:
-    """Buy an escape pod."""
-    logger.warning(f"{inspect.currentframe().f_code.co_name} is not implememented yet.")
+    """Buy an escape pod"""
+    assert c.GAME["commander"].escapePod is False, "Commander already has an escape pod!"
+    assert c.GAME["commander"].credits >= 1000, "Not enough credits to buy an escape pod!"
+
+    # TODO maybe not hardcode this cost
+    c.GAME["commander"].credits -= 1000
+    c.GAME["commander"].escapePod = True
 
 
 def buy_ship() -> None:
@@ -63,7 +68,7 @@ def sell_equipment() -> None:
 
 
 def hire_crew() -> None:
-    """Hire a crew member."""
+    """Hire a crew member"""
     logger.warning(f"{inspect.currentframe().f_code.co_name} is not implememented yet.")
 
 

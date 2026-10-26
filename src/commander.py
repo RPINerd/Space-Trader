@@ -31,6 +31,7 @@ class Commander:
         self.currentSystem = random.randint(0, 120)
         self.noClaimDays = 0
         self.insurance = False
+        self.escapePod = False
 
     def __str__(self) -> str:
         """Returns the name of the commander"""
