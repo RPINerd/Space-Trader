@@ -5,7 +5,8 @@ from tkinter import ttk
 from typing import TYPE_CHECKING
 
 import src.constants as c
-import src.ui_actions as actions
+from src.actions.information import get_system_info
+from src.actions.trade import buy_news
 from src.constants import Size, TechLevel
 from src.universe import Planet
 
@@ -25,7 +26,7 @@ class SystemInfo(Screen):
 
     def create_widgets(self) -> None:
         """"""
-        system_info, pressure = actions.get_system_info()
+        system_info, pressure = get_system_info()
 
         # Info Frame
         self.info_frame = ttk.Frame(self)
@@ -48,7 +49,7 @@ class SystemInfo(Screen):
 
         # Shortcut Frame
         self.shortcut_frame = ttk.Frame(self)
-        ttk.Button(self.shortcut_frame, text="News", command=actions.buy_news).pack(side="left")
+        ttk.Button(self.shortcut_frame, text="News", command=buy_news).pack(side="left")
         self.shortcut_frame.pack(side="top", fill="both", expand=True)
 
 

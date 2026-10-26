@@ -5,7 +5,8 @@ from tkinter import ttk
 from typing import TYPE_CHECKING
 
 import src.constants as c
-import src.ui_actions as actions
+from src.actions.finance import get_credits
+from src.actions.ship_services import buy_equipment, get_equip_sold, sell_equipment
 
 from .screens import Screen
 
@@ -26,12 +27,12 @@ class BuyEquipment(Screen):
         self.table_frame = ttk.Frame(self)
         self.table_frame.columnconfigure(1, weight=1)
 
-        sold_equipment = actions.get_equip_sold()
+        sold_equipment = get_equip_sold()
         for row, value in enumerate(sold_equipment):
             unavailable_marker, equipment_name, price = value
 
             if not unavailable_marker:
-                ttk.Button(self.table_frame, text="Buy", command=actions.buy_equipment).grid(row=row, column=0)
+                ttk.Button(self.table_frame, text="Buy", command=buy_equipment).grid(row=row, column=0)
             else:
                 ttk.Label(self.table_frame, text="   ").grid(row=row, column=0)
 
@@ -41,7 +42,7 @@ class BuyEquipment(Screen):
         self.table_frame.pack(fill="x", expand=True)
 
         # Keep the price/status column at the right edge of the screen.
-        self.credits_label = ttk.Label(self, text=actions.get_credits())
+        self.credits_label = ttk.Label(self, text=get_credits())
         self.credits_label.place(relx=1, rely=1, anchor="se")
 
 
@@ -62,7 +63,7 @@ class SellEquipment(Screen):
 
         weapon_frame = ttk.Frame(self.table_frame)
         weapon_frame.columnconfigure(1, weight=1)
-        ttk.Button(weapon_frame, text="Sell", command=actions.sell_equipment).grid(row=0, column=0, sticky="w")
+        ttk.Button(weapon_frame, text="Sell", command=sell_equipment).grid(row=0, column=0, sticky="w")
         ttk.Label(weapon_frame, text="Pulse laser").grid(row=0, column=1, sticky="w", padx=5 * c.SCALAR)
         ttk.Label(weapon_frame, text="1500 cr.").grid(row=0, column=2, sticky="e")
         weapon_frame.grid(row=0, column=0, sticky="new")
@@ -80,5 +81,5 @@ class SellEquipment(Screen):
         ttk.Label(self.table_frame, text="No gadgets").grid(row=4, column=0, sticky="w", padx=22 * c.SCALAR)
         self.table_frame.pack(fill="both", expand=True)
 
-        self.credits_label = ttk.Label(self, text=actions.get_credits())
+        self.credits_label = ttk.Label(self, text=get_credits())
         self.credits_label.place(relx=1, rely=1, anchor="se")

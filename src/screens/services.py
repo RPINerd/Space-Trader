@@ -5,7 +5,17 @@ from tkinter import messagebox, ttk
 from typing import TYPE_CHECKING
 
 import src.economy as e
-import src.ui_actions as actions
+from src.actions.finance import (
+    buy_insurance,
+    get_credits,
+    get_debt,
+    get_insurance_rate,
+    get_loan,
+    get_max_loan,
+    get_no_claim,
+    get_ship_value,
+)
+from src.actions.ship_services import buy_fuel, buy_pod, buy_ship, repair
 from src.constants import Size
 
 from .screens import Screen
@@ -39,12 +49,12 @@ class Bank(Screen):
 
         self.loan_grid = ttk.Frame(self.loan_frame)
         ttk.Label(self.loan_grid, text="Current debt:").grid(row=0, column=0, sticky="w")
-        ttk.Label(self.loan_grid, text=actions.get_debt()).grid(row=0, column=1, sticky="w")
+        ttk.Label(self.loan_grid, text=get_debt()).grid(row=0, column=1, sticky="w")
         ttk.Label(self.loan_grid, text="Maximum loan:").grid(row=1, column=0)
-        ttk.Label(self.loan_grid, text=actions.get_max_loan()).grid(row=1, column=1)
+        ttk.Label(self.loan_grid, text=get_max_loan()).grid(row=1, column=1)
 
         self.loan_grid.pack(expand=True, fill="x")
-        ttk.Button(self.loan_frame, text="Get Loan", command=actions.get_loan).pack()
+        ttk.Button(self.loan_frame, text="Get Loan", command=get_loan).pack()
         self.loan_frame.pack(expand=True, fill="x")
 
         # Insurance Frame
@@ -55,16 +65,16 @@ class Bank(Screen):
         ttk.Label(self.insurance_grid, text="Current ship:").grid(row=0, column=0)
         ttk.Label(self.insurance_grid, text="No-claim:").grid(row=1, column=0)
         ttk.Label(self.insurance_grid, text="Costs:").grid(row=2, column=0)
-        ttk.Label(self.insurance_grid, text=actions.get_ship_value()).grid(row=0, column=1)
-        ttk.Label(self.insurance_grid, text=actions.get_no_claim()).grid(row=1, column=1)
-        ttk.Label(self.insurance_grid, text=actions.get_insurance_rate()).grid(row=2, column=1)
+        ttk.Label(self.insurance_grid, text=get_ship_value()).grid(row=0, column=1)
+        ttk.Label(self.insurance_grid, text=get_no_claim()).grid(row=1, column=1)
+        ttk.Label(self.insurance_grid, text=get_insurance_rate()).grid(row=2, column=1)
 
         self.insurance_grid.pack(expand=True, fill="x")
-        ttk.Button(self.insurance_frame, text="Buy Insurance", command=actions.buy_insurance).pack()
+        ttk.Button(self.insurance_frame, text="Buy Insurance", command=buy_insurance).pack()
         self.insurance_frame.pack(expand=True, fill="x")
 
         # Current credits
-        self.credits_label = ttk.Label(self, text=actions.get_credits())
+        self.credits_label = ttk.Label(self, text=get_credits())
         self.credits_label.place(relx=1, rely=1, anchor="se")
 
 
@@ -81,25 +91,25 @@ class Shipyard(Screen):
         # Fuel Frame
         self.fuel_frame = ttk.Frame(self)
         ttk.Label(self.fuel_frame, text=FUEL_STATUS.format(0), font=("Palm Pilot Small", 14)).pack()
-        ttk.Button(self.fuel_frame, text="Refuel", command=actions.buy_fuel).pack()
+        ttk.Button(self.fuel_frame, text="Refuel", command=buy_fuel).pack()
         self.fuel_frame.pack(side="top", fill="both", expand=True)
 
         # Hull Frame
         self.hull_frame = ttk.Frame(self)
         ttk.Label(self.hull_frame, text=HULL_STATUS.format(0), font=("Palm Pilot Small", 14)).pack()
-        ttk.Button(self.hull_frame, text="Repair", command=actions.repair).pack()
+        ttk.Button(self.hull_frame, text="Repair", command=repair).pack()
         self.hull_frame.pack(side="top", fill="both", expand=True)
 
         # Escape Pod Frame
         self.escape_pod_frame = ttk.Frame(self)
         ttk.Label(self.escape_pod_frame, text=ESCAPE_POD, font=("Palm Pilot Small", 14)).pack()
-        ttk.Button(self.escape_pod_frame, text="Buy Escape Pod", command=actions.buy_pod).pack()
+        ttk.Button(self.escape_pod_frame, text="Buy Escape Pod", command=buy_pod).pack()
         self.escape_pod_frame.pack(side="top", fill="both", expand=True)
 
         # Ship Sales Frame
         self.ship_sales_frame = ttk.Frame(self)
         ttk.Label(self.ship_sales_frame, text=SHIP_SALES, font=("Palm Pilot Small", 14)).pack()
-        ttk.Button(self.ship_sales_frame, text="Buy Ship", command=actions.buy_ship).pack()
+        ttk.Button(self.ship_sales_frame, text="Buy Ship", command=buy_ship).pack()
         self.ship_sales_frame.pack(side="top", fill="both", expand=True)
 
 
@@ -119,7 +129,7 @@ class BuyShip(Screen):
         self.table_frame = ttk.Frame(self)
         self.table_frame.columnconfigure(1, weight=1)
         for row, ship in enumerate(ships_for_sale):
-            ttk.Button(self.table_frame, text="Buy", command=actions.buy_ship).grid(row=row, column=0)
+            ttk.Button(self.table_frame, text="Buy", command=buy_ship).grid(row=row, column=0)
             ttk.Label(self.table_frame, text=ship.name).grid(row=row, column=1, sticky="w")
             ttk.Button(
                 self.table_frame,
@@ -130,7 +140,7 @@ class BuyShip(Screen):
 
         self.table_frame.pack(fill="x", expand=True)
 
-        self.credits_label = ttk.Label(self, text=actions.get_credits())
+        self.credits_label = ttk.Label(self, text=get_credits())
         self.credits_label.place(relx=1, rely=1, anchor="se")
 
     @staticmethod

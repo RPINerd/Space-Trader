@@ -4,7 +4,7 @@ import tkinter as tk
 from tkinter import ttk
 from typing import TYPE_CHECKING
 
-import src.ui_actions as actions
+from src.actions.information import get_commander_info, get_quests
 
 from .screens import Screen
 
@@ -23,7 +23,7 @@ class CommanderInfo(Screen):
     def create_widgets(self) -> None:  # ruff:ignore[too-many-statements]
         """"""
         # Pull the data for the current commander's info
-        commander_info = actions.get_commander_info()
+        commander_info = get_commander_info()
 
         # First frame is the Name: {name}
         self.name_frame = ttk.Frame(self)
@@ -243,7 +243,7 @@ class Quests(Screen):
 
     def create_widgets(self) -> None:
         """"""
-        quests = actions.get_quests()
+        quests = get_quests()
 
         for _, quest in enumerate(quests):
             ttk.Label(self, text=quest).pack()
