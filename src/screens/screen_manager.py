@@ -6,26 +6,12 @@
 import logging
 import tkinter as tk
 
-from .gamescreens import (
-    AvgPrices,
-    Bank,
-    BuyCargo,
-    BuyEquipment,
-    BuyShip,
-    CommanderInfo,
-    LongRange,
-    Personnel,
-    Quests,
-    SellCargo,
-    SellEquipment,
-    ShipInfo,
-    Shipyard,
-    ShortRange,
-    SpecialCargo,
-    SystemInfo,
-    TargetSystem,
-)
+from .charts import LongRange, ShortRange, SystemInfo, TargetSystem
+from .commander import CommanderInfo, Personnel, Quests, ShipInfo, SpecialCargo
+from .equipment import BuyEquipment, SellEquipment
 from .screens import Screen
+from .services import Bank, BuyShip, Shipyard
+from .trade import AvgPrices, BuyCargo, SellCargo
 
 logger = logging.getLogger(__name__)
 

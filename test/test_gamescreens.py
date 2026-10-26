@@ -1,5 +1,5 @@
 from src.economy import PoliticalSystem
-from src.screens.gamescreens import ShortRange
+from src.screens.charts import ShortRange
 from src.universe import GOVERNMENTS, Planet
 
 
