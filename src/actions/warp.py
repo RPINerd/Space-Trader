@@ -8,9 +8,26 @@ import inspect
 import logging
 from random import choice, randint
 
+import src.constants as c
 from src import universe
 
 logger = logging.getLogger(__name__)
+
+
+def _resolve_target(
+    target: int | universe.Planet | None, planets: dict[int, universe.Planet]
+) -> tuple[int | None, universe.Planet | None]:
+    if isinstance(target, int):
+        return target, planets.get(target)
+    if target is None:
+        return None, None
+
+    target_id = next((planet_id for planet_id, planet in planets.items() if planet is target), None)
+    return target_id, target if target_id is not None else None
+
+
+def _within_fuel_range(via_singularity: bool, wormhole_jump: bool, distance: int, fuel: int) -> bool:
+    return via_singularity or wormhole_jump or 0 < distance <= fuel
 
 
 def shuffle_system_status() -> None:
@@ -27,33 +44,52 @@ def shuffle_system_status() -> None:
 
 
 def prep_for_warp(via_singularity: bool = False) -> None:
+    """Validate and prepare the commander and ship for a warp."""
+    game = c.GAME
+    commander = game["commander"]
+    ship = commander.ship
+    game_universe = game["universe"]
+    target_id, target_planet = _resolve_target(game.get("target_system"), game_universe.planets)
+
+    if target_id is None or target_planet is None:
+        logger.warning("Warp cancelled: no valid target system selected")
+        return
+
+    current_id = commander.currentSystem
+    if target_id == current_id:
+        logger.warning("Warp cancelled: target system is the current system")
+        return
+
+    wormhole_jump = universe.wormhole_exists(game_universe.wormholes, current_id, target_id)
+    distance = game_universe.planets[current_id].get_distance(target_planet)
+    available_fuel = min(ship.fuel, ship.tank_capacity)
+
+    if not _within_fuel_range(via_singularity, wormhole_jump, distance, available_fuel):
+        logger.warning("Warp cancelled: target system is outside fuel range")
+        return
+
+    # TODO: If Wild is aboard, require a weapon or let the player leave him behind.
+
+    if commander.debt > c.DEBT_LIMIT:
+        logger.warning("Warp cancelled: debt is too large for travel")
+        return
+
+    # TODO: Sum the daily salaries for hired crew once crew membership is modeled.
+    mercenary_cost = 0
+    insurance_cost = commander.get_insurance_payment()
+    wormhole_tax = ship.fuel_cost * 25 if wormhole_jump else 0
+    travel_cost = mercenary_cost + insurance_cost + wormhole_tax
+    if travel_cost > commander.credits:
+        logger.warning("Warp cancelled: not enough credits for travel costs")
+        return
+
+    if not via_singularity:
+        commander.credits -= travel_cost
+        if commander.insurance:
+            commander.noClaimDays += 1
+
+    # TODO: Refill installed shields to their type's maximum strength.
     """
-    This function coordinates all the processes that take place once the player clicks on the Warp button
-
-    Args:
-        via_singularity (bool): whether travel is occuring through a wormhole or not
-    """
-    logger.warning(f"{inspect.currentframe().f_code.co_name} is not implememented yet.")
-
-    # The following pseudocode summary is a direct port of the step by step functions from the original source codes 'DoWarp()'
-
-    # 1. If Wild is aboard, the ship must be armed
-    # If not armed, player must choose whether to say goodbye to Wild or not
-
-    # 2. Check if the players debt is too large to travel
-    # TODO need to fill out more details on this
-
-    # 3. Verify enough money to pay for mercenaries currently hired
-
-    # 4. Verify enough money for current insurance payment
-
-    # 5. If attempting to travel via wormhole, calulate tax and make sure there is enough money
-
-    # 6. If all above checks do not raise any warnings, deduct the funds from the player account
-
-    """
-    At this point looks to be some sort of sheild reset?
-
     for (i=0; i<MAXSHIELD; ++i)
 	{
 		if (Ship.Shield[i] < 0)
@@ -61,21 +97,11 @@ def prep_for_warp(via_singularity: bool = False) -> None:
 		Ship.ShieldStrength[i] = Shieldtype[Ship.Shield[i]].Power;
 	}
     """
+    game["arrived_via_wormhole"] = via_singularity or wormhole_jump
+    if not game["arrived_via_wormhole"]:
+        ship.fuel -= min(distance, available_fuel)
 
-    # 7. Process fuel and distance
-    # TODO GetFuel() function translation
-    """
-    if wormhole jump
-        distance = 0
-        arrived_via_worm = true
-    else
-        distance = dist(current_system, target_system)
-        ship.fuel -= min(distance, {GetFuel() function})
-        arrived_via_worm = false
-    """
-
-    # 8. Handle news and insurance things
-
+    # TODO: Reset transient news events before recording this trip's events.
     """
     {resetNewsEvents()}
 
@@ -87,25 +113,26 @@ def prep_for_warp(via_singularity: bool = False) -> None:
     else
         {addNewsEvent(ARRIVALVIASINGULARITY)}
     """
+    if not via_singularity:
+        commander.pay_interest()
+        commander.timePlayed += 1
+        # TODO: Advance quest timers along with the play-time counter.
+    else:
+        # TODO: Add the arrival-via-singularity news event.
+        pass
 
-    # 9. Init some travel variables
+    game["clicks"] = 21
+    game["raided"] = False
+    game["inspected"] = False
+    game["litter_warning"] = False
 
+    # TODO: Grow monster hull by 5%, capped at its ship type's hull strength.
     """
-    clicks = 21
-    raided = false
-    inspected = false
-    litter_warning = false
-    """
-
-    # 10. Grow the monster
     monster_hull = (monster_hull * 105) / 100
-    """
     if (MonsterHull > Shiptype[SpaceMonster.Type].HullStrength)
 		MonsterHull = Shiptype[SpaceMonster.Type].HullStrength
 	"""
-
-    # 11. Update passive changes to police record
-
+    # TODO: Apply passive police-record changes based on time and difficulty.
     """
     if (Days%3 == 0)
 	{
@@ -118,14 +145,10 @@ def prep_for_warp(via_singularity: bool = False) -> None:
 		else if (Days%Difficulty == 0)
 			++PoliceRecordScore
     """
+    game["possible_to_go_through_rip"] = True
 
-    # TODO not sure what this is about yet
-    possible_to_go_through_rip = True
-
-    # TODO expound upon
-    # {DeterminePrices(WarpSystem)}
-
-    # Travel()
+    # TODO: Determine prices in the target system before starting transit (src. {DeterminePrices(WarpSystem)})
+    travel()
 
 
 def travel() -> None:
