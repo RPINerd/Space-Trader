@@ -77,8 +77,22 @@ class Commander:
                 self.credits = 0
 
     def pay_insurance(self) -> None:
+        """Calculates the per-jump insurance payment on the ship and pays it"""
+        # ! This is no longer used, but should investigate if debt is ever actually allowed in source code..
+        if not self.insurance:
+            return
+
+        payment = self.get_insurance_payment()
+        if self.credits >= payment:
+            self.credits -= payment
+        else:
+            self.debt += payment - self.credits
+            self.credits = 0
+        self.noClaimDays += 1
+
+    def get_insurance_payment(self) -> int:
         """
-        Calculates the per-jump insurance payment on the ship and pays it
+        Calculates the per-jump insurance payment on the ship
 
         Insurance rate is the percentage of the ship's value that is paid as insurance daily.
         This rate begins at 100% and drops by 1% for each day without a claim
@@ -87,17 +101,11 @@ class Commander:
         Source code uses integer truncation rather than floating point math, so we do the same to keep functionality faithful
         """
         if not self.insurance:
-            return
+            return 0
 
         ship_value_insured = self.ship.get_value(True)
         base = (ship_value_insured * 5) // 2000
-        payment = max(1, base * (100 - min(self.noClaim, MAX_NOCLAIM)) // 100)
-        if self.credits >= payment:
-            self.credits -= payment
-        else:
-            self.debt += payment - self.credits
-            self.credits = 0
-        self.noClaim += 1
+        return max(1, base * (100 - min(self.noClaimDays, MAX_NOCLAIM)) // 100)
 
     def get_debt(self) -> int:
         """Returns the current debt of the commander"""
