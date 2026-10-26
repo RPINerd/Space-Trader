@@ -67,11 +67,6 @@ def buy_news() -> None:
     logger.debug("Buying news!")
 
 
-def warp() -> None:
-    """"""
-    logger.warning(f"{inspect.currentframe().f_code.co_name} is not implememented yet.")
-
-
 def attack() -> None:
     """"""
     logger.warning(f"{inspect.currentframe().f_code.co_name} is not implememented yet.")

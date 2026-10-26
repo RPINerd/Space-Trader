@@ -7,10 +7,11 @@
 import logging
 import tkinter as tk
 from random import randint
-from tkinter import ttk
+from tkinter import messagebox, ttk
 from typing import TYPE_CHECKING
 
 import src.constants as c
+import src.economy as e
 import src.ui_actions as actions
 from src.constants import Size, TechLevel
 from src.universe import Planet
@@ -569,6 +570,44 @@ class BuyShip(Screen):
     def __init__(self, parent: tk.Misc, screen_title: str, manager: ScreenManager) -> None:
         """"""
         super().__init__(parent, screen_title, manager)
+
+    def create_widgets(self) -> None:
+        """Show purchasable ships with prices and specifications."""
+        ship_names = e.Ship.sale_lst()
+        ships_for_sale = [ship for ship in e.SHIPS.values() if ship.name in ship_names]
+
+        self.table_frame = ttk.Frame(self)
+        self.table_frame.columnconfigure(1, weight=1)
+        for row, ship in enumerate(ships_for_sale):
+            ttk.Button(self.table_frame, text="Buy", command=actions.buy_ship).grid(row=row, column=0)
+            ttk.Label(self.table_frame, text=ship.name).grid(row=row, column=1, sticky="w")
+            ttk.Button(
+                self.table_frame,
+                text="Info",
+                command=lambda selected_ship=ship: self.show_ship_info(selected_ship),
+            ).grid(row=row, column=2)
+            ttk.Label(self.table_frame, text=f"{ship.price} cr.").grid(row=row, column=3, sticky="e")
+
+        self.table_frame.pack(fill="x", expand=True)
+
+        self.credits_label = ttk.Label(self, text=actions.get_credits())
+        self.credits_label.place(relx=1, rely=1, anchor="se")
+
+    @staticmethod
+    def show_ship_info(ship: e.Ship) -> None:
+        """Display the selected ship's specifications."""
+        details = (
+            f"Size: {Size.name(ship.size)}\n"
+            f"Hull: {ship.hull}\n"
+            f"Cargo: {ship.cargo} bays\n"
+            f"Crew: {ship.crew}\n"
+            f"Fuel: {ship.fuel} parsecs\n"
+            f"Weapon slots: {ship.weapon_slots}\n"
+            f"Shield slots: {ship.shield_slots}\n"
+            f"Gadget slots: {ship.gadget_slots}\n"
+            f"Price: {ship.price} cr."
+        )
+        messagebox.showinfo(ship.name, details)
 
 
 class CommanderInfo(Screen):
