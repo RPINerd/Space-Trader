@@ -36,6 +36,7 @@ class SpaceTrader(tk.Tk):
         self._load_assets()
         self._build_styles()
         self.manager = ScreenManager(self)
+        self._build_menu()
 
         # TODO eventually check for existing game and load or start new game
         self.boot()
@@ -91,6 +92,94 @@ class SpaceTrader(tk.Tk):
             "Title.TLabel", background=c.FRG_HEX, foreground=c.BKG_HEX, font=("Palm Pilot Bold", title_fontsize)
         )
         s.configure("Heading.TLabel", background=c.BKG_HEX, font=("Palm Pilot Bold", normal_fontsize))
+
+    def _build_menu(self) -> None:
+        """Build the application menu bar and connect available actions."""
+        menu_options = {
+            "background": c.BKG_HEX,
+            "foreground": c.FRG_HEX,
+            "activebackground": c.FRG_HEX,
+            "activeforeground": c.BKG_HEX,
+            "font": ("Palm Pilot Small", int(-14 * c.SCALAR)),
+            "relief": "flat",
+            "borderwidth": 0,
+        }
+        menu_bar = tk.Menu(self, tearoff=False, **menu_options)
+
+        command_menu = tk.Menu(menu_bar, tearoff=False, **menu_options)
+        command_items = (
+            ("Buy Cargo", "B"),
+            ("Sell Cargo", "S"),
+            ("Ship Yard", "Y"),
+            ("Buy Equipment", "E"),
+            ("Sell Equipment", "Q"),
+            ("Personnel Roster", "P"),
+            ("Bank", "K"),
+            ("System Information", "I"),
+            ("Commander Status", "C"),
+            ("Galactic Chart", "G"),
+            ("Short Range Chart", "W"),
+        )
+        for label, screen_key in command_items:
+            command_menu.add_command(
+                label=label,
+                accelerator=f"/{screen_key}",
+                command=lambda key=screen_key: self._navigate_to_screen(key),
+            )
+        menu_bar.add_cascade(label="Command", menu=command_menu)
+
+        game_menu = tk.Menu(menu_bar, tearoff=False, **menu_options)
+        game_items = (
+            ("New Game", ""),
+            ("Switch Game", ""),
+            ("Retire", ""),
+            ("Options", "/O"),
+            ("Shortcuts", ""),
+            ("High Scores", ""),
+            ("Clear High Scores", ""),
+            ("Snapshot", ""),
+        )
+        for index, (label, accelerator) in enumerate(game_items):
+            if index in {3, 5, 7}:
+                game_menu.add_separator()
+            game_menu.add_command(
+                label=label,
+                accelerator=accelerator,
+                command=lambda item=label: logger.warning("%s is not implemented yet", item),
+            )
+        menu_bar.add_cascade(label="Game", menu=game_menu)
+
+        help_menu = tk.Menu(menu_bar, tearoff=False, **menu_options)
+        help_items = (
+            ("Help Current Screen", "/H"),
+            ("Help On Menu", ""),
+            ("How To Play", ""),
+            ("Trading", ""),
+            ("Traveling", ""),
+            ("Ship Equipment", ""),
+            ("Skills", ""),
+            ("First Steps", ""),
+            ("Acknowledgements", ""),
+            ("About", ""),
+        )
+        for index, (label, accelerator) in enumerate(help_items):
+            if index in {2, 9}:
+                help_menu.add_separator()
+            help_menu.add_command(
+                label=label,
+                accelerator=accelerator,
+                command=lambda item=label: logger.warning("%s is not implemented yet", item),
+            )
+        menu_bar.add_cascade(label="Help", menu=help_menu)
+
+        self.configure(menu=menu_bar)
+
+    def _navigate_to_screen(self, key: str) -> None:
+        """Navigate from a menu item when the game screens are available."""
+        if not hasattr(self.manager, "screens"):
+            logger.warning("Cannot navigate to screen %s before commander creation", key)
+            return
+        self.manager.go_to_screen(key)
 
     def boot(self) -> None:
         """Starts the game"""
