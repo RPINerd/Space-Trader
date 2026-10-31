@@ -21,6 +21,8 @@ from src.utils import FontManager
 
 logger = logging.getLogger(__name__)
 
+GAME_ROOT = Path(__file__).resolve().parent
+
 
 class SpaceTrader(tk.Tk):
 
@@ -63,13 +65,13 @@ class SpaceTrader(tk.Tk):
         """Loads all game assets, currently just pointers to directories"""
         # Load the configuration file
         self.config = configparser.ConfigParser()
-        self.config.read(Path("src/config") / "config.ini")
+        self.config.read(GAME_ROOT / "src/config" / "config.ini")
 
         # Load the directories for the game assets
-        self.images = Path("assets/images/")
-        self.resources = Path("assets/resources/")
-        self.fonts = Path("assets/fonts/")
-        self.data = Path("data")
+        self.images = GAME_ROOT / "assets/images/"
+        self.resources = GAME_ROOT / "assets/resources/"
+        self.fonts = GAME_ROOT / "assets/fonts/"
+        self.data = GAME_ROOT / "data"
         FontManager.load_font(self.fonts / "palm-pilot-small.ttf")
         FontManager.load_font(self.fonts / "palm-pilot-bold.ttf")
         FontManager.load_font(self.fonts / "palm-pilot-large.ttf")
