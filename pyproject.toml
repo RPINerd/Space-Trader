@@ -8,6 +8,7 @@ description = "A space trading game"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "pillow>=13.0.0",
 ]
 classifiers = [
     "Development Status :: 2 - Pre-Alpha",
@@ -19,6 +20,7 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
     "Framework :: Pytest",
     "Topic :: Games/Entertainment :: Role-Playing",
     "Topic :: Games/Entertainment :: Simulation",

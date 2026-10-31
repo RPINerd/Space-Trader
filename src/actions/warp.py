@@ -147,7 +147,8 @@ def prep_for_warp(via_singularity: bool = False) -> None:
     """
     game["possible_to_go_through_rip"] = True
 
-    # TODO: Determine prices in the target system before starting transit (src. {DeterminePrices(WarpSystem)})
+    game_universe.update_trade_prices()
+
     travel()
 
 

@@ -27,6 +27,7 @@ def _make_game(credits: int = 1000, wormholes: list[int] | None = None) -> tuple
         "universe": SimpleNamespace(
             planets={0: current_planet, 1: target_planet},
             wormholes=wormholes or [],
+            update_trade_prices=Mock(),
         ),
         "target_system": target_planet,
     }
@@ -47,6 +48,7 @@ def test_prep_for_warp_updates_normal_travel_state(monkeypatch) -> None:
     assert game["arrived_via_wormhole"] is False
     assert game["clicks"] == 21
     commander.pay_interest.assert_called_once_with()
+    game["universe"].update_trade_prices.assert_called_once_with()
     travel.assert_called_once_with()
 
 
@@ -63,6 +65,7 @@ def test_prep_for_warp_rejects_unaffordable_wormhole_without_mutation(monkeypatc
     assert commander.timePlayed == 0
     assert "arrived_via_wormhole" not in game
     commander.pay_interest.assert_not_called()
+    game["universe"].update_trade_prices.assert_not_called()
     travel.assert_not_called()
 
 

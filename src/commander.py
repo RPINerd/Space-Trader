@@ -24,6 +24,7 @@ class Commander:
         self.credits = 1000
         self.debt = 0
         self.ship = SHIPS[Ship.GNAT]
+        self.cargo = [0] * 10
         self.kills = 0
         self.reputation = 0
         self.policeRecord = 0

@@ -570,11 +570,13 @@ class Planet:  # ruff: ignore[too-many-public-methods] (too many public methods)
         self.special_resource = special_resource
         self.quest_system = False
         self.trade_items = [0] * 10
+        self.trade_prices = [0] * 10
         self.count_down = 0
         self.visited = False
         self.shipyard_id = None
 
         self.initialize_trade_items()
+        self.update_trade_prices()
 
     # Basic Info Interfaces
     def __str__(self) -> str:
@@ -766,6 +768,36 @@ class Planet:  # ruff: ignore[too-many-public-methods] (too many public methods)
 
             # Finally just make sure it's not negative
             self.trade_items[item_id] = max(self.trade_items[item_id], 0)
+
+    def update_trade_prices(self) -> None:
+        """Recalculate the price of each trade good for this planet."""
+        prices = []
+        for item_id in Ware.enum():
+            ware = TRADEITEMS[item_id]
+            if not self.is_item_traded(item_id) or self.tech_level < ware.tech_level_min:
+                prices.append(0)
+                continue
+
+            price = ware.max_price + ware.min_price * self.tech_level
+            if self.government.trade_item_id == item_id:
+                price = price * 4 // 3
+            price = price * (100 - 2 * self.government.economy) // 100
+            price = price * (100 - self.size) // 100
+
+            if self.special_resource == ware.special_resource_drop:
+                price = price * 3 // 4
+            if self.special_resource == ware.special_resource_hike:
+                price = price * 4 // 3
+
+            if ware.pressure_price > 0:
+                price += randint(0, ware.pressure_price - 1) - randint(0, ware.pressure_price - 1)
+
+            if price <= 0:
+                prices.append(0)
+            else:
+                prices.append(max(ware.min_prod, min(ware.max_prod, price)))
+
+        self.trade_prices = prices
 
     def is_item_traded(self, item: int) -> bool:
         """
@@ -1097,6 +1129,11 @@ class Universe:
         for wh in self.wormholes:
             new_index = randint(0, len(self.wormholes) - 1)
             wh, self.wormholes[new_index] = self.wormholes[new_index], wh
+
+    def update_trade_prices(self) -> None:
+        """Refresh trade prices for every planet in the universe."""
+        for planet in self.planets.values():
+            planet.update_trade_prices()
 
 
 def planet_distance(planet: tuple[int, int], x2: int, y2: int) -> float:
