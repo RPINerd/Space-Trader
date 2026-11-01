@@ -90,25 +90,25 @@ class Shipyard(Screen):
         """"""
         # Fuel Frame
         self.fuel_frame = ttk.Frame(self)
-        ttk.Label(self.fuel_frame, text=FUEL_STATUS.format(0), font=("Palm Pilot Small", 14)).pack()
+        ttk.Label(self.fuel_frame, text=FUEL_STATUS.format(0), font=("Palm Pilot", 14)).pack()
         ttk.Button(self.fuel_frame, text="Refuel", command=buy_fuel).pack()
         self.fuel_frame.pack(side="top", fill="both", expand=True)
 
         # Hull Frame
         self.hull_frame = ttk.Frame(self)
-        ttk.Label(self.hull_frame, text=HULL_STATUS.format(0), font=("Palm Pilot Small", 14)).pack()
+        ttk.Label(self.hull_frame, text=HULL_STATUS.format(0), font=("Palm Pilot", 14)).pack()
         ttk.Button(self.hull_frame, text="Repair", command=repair).pack()
         self.hull_frame.pack(side="top", fill="both", expand=True)
 
         # Escape Pod Frame
         self.escape_pod_frame = ttk.Frame(self)
-        ttk.Label(self.escape_pod_frame, text=ESCAPE_POD, font=("Palm Pilot Small", 14)).pack()
+        ttk.Label(self.escape_pod_frame, text=ESCAPE_POD, font=("Palm Pilot", 14)).pack()
         ttk.Button(self.escape_pod_frame, text="Buy Escape Pod", command=buy_pod).pack()
         self.escape_pod_frame.pack(side="top", fill="both", expand=True)
 
         # Ship Sales Frame
         self.ship_sales_frame = ttk.Frame(self)
-        ttk.Label(self.ship_sales_frame, text=SHIP_SALES, font=("Palm Pilot Small", 14)).pack()
+        ttk.Label(self.ship_sales_frame, text=SHIP_SALES, font=("Palm Pilot", 14)).pack()
         ttk.Button(self.ship_sales_frame, text="Buy Ship", command=buy_ship).pack()
         self.ship_sales_frame.pack(side="top", fill="both", expand=True)
 

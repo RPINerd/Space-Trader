@@ -28,10 +28,10 @@ def main(state: str) -> None:
     preview.configure(bg=c.BKG_HEX)
 
     fonts = Path(__file__).parent / "assets" / "fonts"
-    FontManager.load_font(fonts / "palm-pilot-small.ttf")
-    FontManager.load_font(fonts / "palm-pilot-bold.ttf")
-    FontManager.load_font(fonts / "palm-pilot-large.ttf")
-    FontManager.load_font(fonts / "palm-pilot-large-bold.ttf")
+    FontManager.load_font(fonts / "PalmPilot.ttf")
+    FontManager.load_font(fonts / "PalmPilotBold.ttf")
+    FontManager.load_font(fonts / "PalmPilotLarge.ttf")
+    FontManager.load_font(fonts / "PalmPilotLargeBold.ttf")
 
     try:
         screen_class = SCREENS[state]["class"]

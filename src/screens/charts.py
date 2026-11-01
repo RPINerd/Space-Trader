@@ -142,7 +142,7 @@ class ShortRange(Screen):
                 y - 2 * c.SCALAR,
                 text=planet.name,
                 anchor="s",
-                font=("Palm Pilot Small", 14),
+                font=("Palm Pilot", 14),
                 fill=c.FRG_HEX,
             )
 

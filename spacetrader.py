@@ -72,10 +72,10 @@ class SpaceTrader(tk.Tk):
         self.resources = GAME_ROOT / "assets/resources/"
         self.fonts = GAME_ROOT / "assets/fonts/"
         self.data = GAME_ROOT / "data"
-        FontManager.load_font(self.fonts / "palm-pilot-small.ttf")
-        FontManager.load_font(self.fonts / "palm-pilot-bold.ttf")
-        FontManager.load_font(self.fonts / "palm-pilot-large.ttf")
-        FontManager.load_font(self.fonts / "palm-pilot-large-bold.ttf")
+        FontManager.load_font(self.fonts / "PalmPilot.ttf")
+        FontManager.load_font(self.fonts / "PalmPilotBold.ttf")
+        FontManager.load_font(self.fonts / "PalmPilotLarge.ttf")
+        FontManager.load_font(self.fonts / "PalmPilotLargeBold.ttf")
 
     @staticmethod
     def _build_styles() -> None:
@@ -85,11 +85,11 @@ class SpaceTrader(tk.Tk):
         s = ttk.Style()
         s.theme_use("alt")
         s.configure(
-            "TEntry", background=c.BKG_HEX, fieldbackground=c.BKG_HEX, font=("Palm Pilot Small", normal_fontsize)
+            "TEntry", background=c.BKG_HEX, fieldbackground=c.BKG_HEX, font=("Palm Pilot", normal_fontsize)
         )
-        s.configure("TFrame", background=c.BKG_HEX, font=("Palm Pilot Small", normal_fontsize))
-        s.configure("TButton", background=c.BKG_HEX, font=("Palm Pilot Small", normal_fontsize))
-        s.configure("TLabel", background=c.BKG_HEX, font=("Palm Pilot Small", normal_fontsize))
+        s.configure("TFrame", background=c.BKG_HEX, font=("Palm Pilot", normal_fontsize))
+        s.configure("TButton", background=c.BKG_HEX, font=("Palm Pilot", normal_fontsize))
+        s.configure("TLabel", background=c.BKG_HEX, font=("Palm Pilot", normal_fontsize))
         s.configure(
             "Title.TLabel", background=c.FRG_HEX, foreground=c.BKG_HEX, font=("Palm Pilot Bold", title_fontsize)
         )
@@ -102,7 +102,7 @@ class SpaceTrader(tk.Tk):
             "foreground": c.FRG_HEX,
             "activebackground": c.FRG_HEX,
             "activeforeground": c.BKG_HEX,
-            "font": ("Palm Pilot Small", int(-14 * c.SCALAR)),
+            "font": ("Palm Pilot", int(-14 * c.SCALAR)),
             "relief": "flat",
             "borderwidth": 0,
         }

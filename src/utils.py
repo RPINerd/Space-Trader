@@ -7,6 +7,7 @@
 
 import logging
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -22,6 +23,25 @@ class FontManager:
     """Manages font loading and initialization for different platforms."""
 
     linux_font_path = Path("~/.fonts/")
+    font_files = (
+        "PalmPilot.ttf",
+        "PalmPilotBold.ttf",
+        "PalmPilotLarge.ttf",
+        "PalmPilotLargeBold.ttf",
+    )
+
+    @classmethod
+    def load_fonts(cls, font_dir: Path) -> None:
+        """Install the bundled fonts and refresh Linux font discovery."""
+        for font_file in cls.font_files:
+            cls.load_font(font_dir / font_file)
+
+        if sys.platform.startswith("linux"):
+            font_path = Path.expanduser(cls.linux_font_path)
+            try:
+                subprocess.run(["fc-cache", "--force", str(font_path)], check=True, capture_output=True)
+            except (OSError, subprocess.CalledProcessError) as err:
+                logger.warning("Could not refresh the Linux font cache: %s", err)
 
     @classmethod
     def init_font_manager(cls) -> bool:
